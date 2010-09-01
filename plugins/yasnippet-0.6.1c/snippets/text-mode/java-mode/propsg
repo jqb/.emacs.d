@@ -1,0 +1,9 @@
+
+public void set${2:$(capitalize text)}(${1:type} $2){
+    this.$2 = $2;
+}
+
+public $1 get${2:$(capitalize text)}(){
+    return this.$2;
+}
+$0$>

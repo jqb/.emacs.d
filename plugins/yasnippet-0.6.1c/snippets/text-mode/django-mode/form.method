@@ -1,0 +1,4 @@
+# --
+<form method="$1">
+  $0
+</form>

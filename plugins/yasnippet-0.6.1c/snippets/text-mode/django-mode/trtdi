@@ -1,0 +1,7 @@
+#contributor : Kuba Janoszek <kuba.janoszek@gmail.com>
+#name : <tr><td>..</td></tr> inline
+#group : table
+# --
+<tr>
+  <td>$0</td>
+</tr>

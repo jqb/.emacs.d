@@ -1,0 +1,6 @@
+#contributor : Kuba Janoszek <kuba.janoszek@gmail.com>
+#name : \begin{itemize} ... \end{itemize}
+# --
+\begin{itemize}
+$0
+\end{itemize}

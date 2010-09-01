@@ -1,0 +1,7 @@
+# -*- coding: utf-8 -*-
+# name: defm
+# contributor: Jakub Janoszek (kuba.janoszek@gmail.com)
+# --
+# ${1:name} ######################################
+# END OF $1 ######################################
+$0
