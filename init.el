@@ -39,11 +39,16 @@
 
 
 ;;; git support
-(load "/usr/share/doc/git-core/contrib/emacs/git.el")
-(load "/usr/share/doc/git-core/contrib/emacs/git-blame.el")
+;; standard git support
+;; (load "/usr/share/doc/git-core/contrib/emacs/git.el")
+;; (load "/usr/share/doc/git-core/contrib/emacs/git-blame.el")
 ;; (load "/usr/share/doc/git-core/contrib/emacs/vc-git.el")
-(add-to-list 'vc-handled-backends 'GIT)
+;; (add-to-list 'vc-handled-backends 'GIT)
 
+;; magit / egg
+(load "~/.emacs.d/egg/egg.el")
+(load "~/.emacs.d/egg/egg-grep.el")
+(require 'egg)
 
 
 ;; ibuffer by default
@@ -87,6 +92,11 @@
 
 ;; devils's pie mode 
 (add-to-list 'auto-mode-alist '("\\.ds\\'" . lisp-mode))
+
+
+
+;; graphviz-mode
+(load-file "~/.emacs.d/graphviz-dot-mode.el")
 
 
 
