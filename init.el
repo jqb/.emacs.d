@@ -1,4 +1,4 @@
-(if (string-match "GTK+" (emacs-version)) 
+(if (string-match "GTK+" (emacs-version))
     (load "~/.emacs.d/xemacs-only.el")
   (load "~/.emacs.d/console-emacs-only.el"))
 
@@ -8,6 +8,7 @@
 
 
 (setq x-select-enable-clipboard t)
+(setq-default show-trailing-whitespace t)
 (setq line-number-mode t)
 (setq column-number-mode t)
 ;; (global-linum-mode 1)
@@ -21,8 +22,16 @@
 (setq auto-save-default nil)
 
 
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
 
-;; ftp support for passive mode 
+
+(set-face-bold-p 'font-lock-keyword-face t)
+(set-face-italic-p 'font-lock-comment-face t)
+
+
+
+;; ftp support for passive mode
 (defvar ange-ftp-hosts-no-pasv '("localhost")
   "*List of hosts that do not need PASV (e.g. hosts within your firewall).
   Used by `ange-ftp-set-passive'.")	; rephrased, added "*" // era
