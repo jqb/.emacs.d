@@ -221,3 +221,11 @@
 (global-set-key (kbd "C-c p t") 'project-tags)
 
 (load "/home/kuba/.emacs.d/projects.el")
+
+
+;; auto-complete-mode
+(add-to-list 'load-path "~/.emacs.d/auto-complete/")
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete/ac-dict")
+(ac-config-default)
+ac-fuzzy-cursor-color
