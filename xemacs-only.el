@@ -7,7 +7,6 @@
  '(column-number-mode t)
  '(inhibit-startup-echo-area-message nil)
  '(inhibit-startup-screen t)
- '(menu-bar-mode t)
  '(tooltip-mode nil))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
@@ -33,5 +32,5 @@
 ;; (tabbar-mode -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
-(global-hl-line-mode 1)
+(global-hl-line-mode -1)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; end of xemacs settings

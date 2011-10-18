@@ -1,0 +1,4 @@
+# --
+def ${1:name}($2):
+    pass$0
+register.filter($1)

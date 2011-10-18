@@ -126,36 +126,39 @@ Delimiters are paired characters: ()[]<>«»“”‘’「」, including \"\"."
 	(message "Buffer '%s' is not visiting a file!" name)
       (if (get-buffer new-name)
 	  (message "A buffer named '%s' already exists!" new-name)
-	(progn  (rename-file name new-name 1)  
+	(progn  (rename-file name new-name 1)
 		(rename-buffer new-name)
 		(set-visited-file-name new-name)
 		(set-buffer-modified-p nil)))))) ;;
 
 
-;; (setq ibuffer-saved-filter-groups
-;;      (quote (("default"
-;;               ("python" (mode . python-mode))
-;;               ("dired"  (mode . dired-mode))
-;;               ("planner" (or
-;;                           (name . "^\\*Calendar\\*$")
-;;                           (name . "^diary$")
-;;                           (name . "^org$")
-;;                           (mode . muse-mode)))
-;;               ("emacs" (or
-;;                         (name . "^\\*scratch\\*$")
-;;                         (name . "^\\*Messages\\*$")))
-;;               ("gnus" (or
-;;                        (mode . message-mode)
-;;                        (mode . bbdb-mode)
-;;                        (mode . mail-mode)
-;;                        (mode . gnus-group-mode)
-;;                        (mode . gnus-summary-mode)
-;;                        (mode . gnus-article-mode)
-;;                        (name . "^\\.bbdb$")
-;;                        (name . "^\\.newsrc-dribble")))))))
-;; (add-hook 'ibuffer-mode-hook
-;;          (lambda ()
-;;            (ibuffer-switch-to-saved-filter-groups "default")))
+(setq ibuffer-saved-filter-groups
+     (quote (("default"
+              ("python" (mode . python-mode))
+              ("html" (or
+		       (mode . html-mode)
+		       (mode . django-mode)))
+              ("dired"  (mode . dired-mode))
+              ("planner" (or
+                          (name . "^\\*Calendar\\*$")
+                          (name . "^diary$")
+                          (name . "^org$")
+                          (mode . muse-mode)))
+              ("emacs" (or
+                        (name . "^\\*scratch\\*$")
+                        (name . "^\\*Messages\\*$")))
+              ("gnus" (or
+                       (mode . message-mode)
+                       (mode . bbdb-mode)
+                       (mode . mail-mode)
+                       (mode . gnus-group-mode)
+                       (mode . gnus-summary-mode)
+                       (mode . gnus-article-mode)
+                       (name . "^\\.bbdb$")
+                       (name . "^\\.newsrc-dribble")))))))
+(add-hook 'ibuffer-mode-hook
+         (lambda ()
+           (ibuffer-switch-to-saved-filter-groups "default")))
 
 
 (global-set-key (kbd "C-c t t") 'toggle-truncate-lines)
@@ -163,6 +166,9 @@ Delimiters are paired characters: ()[]<>«»“”‘’「」, including \"\"."
 (global-set-key (kbd "S-M-<right>") 'enlarge-window-horizontally)
 (global-set-key (kbd "S-M-<down>") 'shrink-window)
 (global-set-key (kbd "S-M-<up>") 'enlarge-window)
+
+(global-set-key (kbd "M-N") 'shrink-window)
+(global-set-key (kbd "M-P") 'enlarge-window)
 
 
 
@@ -183,7 +189,7 @@ Delimiters are paired characters: ()[]<>«»“”‘’「」, including \"\"."
 (defun create-tags (dir-name)
   "Create tags file."
   (interactive "DDirectory: ")
-  (eshell-command 
+  (eshell-command
    (format "find %s -type f | egrep -v '(.svn)|(.git)' | etags - -l auto" dir-name)))
 
 
@@ -191,7 +197,7 @@ Delimiters are paired characters: ()[]<>«»“”‘’「」, including \"\"."
 (defun create-tags-python (dir-name)
   "Create tags file."
   (interactive "DDirectory: ")
-  (eshell-command 
+  (eshell-command
    (format "find %s -type f | egrep -v '(.svn)|(.git)' | etags - -l python" dir-name)))
 
 
@@ -216,10 +222,6 @@ Delimiters are paired characters: ()[]<>«»“”‘’「」, including \"\"."
 
 (setq multi-term-program "/bin/bash")
 
-;; only needed if you use autopair
-;; (add-hook 'term-mode-hook
-;; 	  '(lambda () (setq autopair-dont-activate t)))
-
 (global-set-key (kbd "C-c c") 'multi-term-next)
 (global-set-key (kbd "C-c T") 'multi-term) ;; create a new one
 
@@ -229,12 +231,20 @@ Delimiters are paired characters: ()[]<>«»“”‘’「」, including \"\"."
 	    (define-key term-raw-map (kbd "C-<right>") 'term-send-forward-word)
 	    (define-key term-raw-map (kbd "C-r") 'term-send-reverse-search-history)
 	    (define-key term-raw-map (kbd "<C-backspace>") 'term-send-backward-kill-word)
+	    (setq-default show-trailing-whitespace nil)
+	    (hl-line-mode -1)
 	    ))
+
+;; only needed if you use autopair
+;; (add-hook 'term-mode-hook
+;; 	  '(lambda () (setq autopair-dont-activate t)))
+
+
 
 ;; (custom-set-variables
 ;;  '(term-default-bg-color "#000000") ;; background color (black)
 ;;  '(term-default-fg-color "#dddd00")) ;; foreground color (yellow)
- 
+
 
 
 ;; ;; enable cua and transient mark modes in term-line-mode

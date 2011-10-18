@@ -9,6 +9,7 @@
 
 (setq x-select-enable-clipboard t)
 (setq-default show-trailing-whitespace t)
+(setq-default truncate-lines t)
 (setq line-number-mode t)
 (setq column-number-mode t)
 ;; (global-linum-mode 1)
@@ -21,14 +22,21 @@
 (global-set-key [f9] 'menu-bar-mode)
 (setq auto-save-default nil)
 
+(show-paren-mode 1)
 
+
+;; several file with the same name are unique from now on:
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
 
 (set-face-bold-p 'font-lock-keyword-face t)
-(set-face-italic-p 'font-lock-comment-face t)
+;; (set-face-italic-p 'font-lock-comment-face t)
+;; (set-face-italic-p 'italic nil)
 
+
+;; Turn off visible-bell
+(setq visible-bell nil)
 
 
 ;; ftp support for passive mode
@@ -45,6 +53,13 @@
 (add-hook 'ange-ftp-process-startup-hook 'ange-ftp-set-passive)
 
 
+;; highlight-symbol
+(load "~/.emacs.d/highlight-symbol.el")
+
+;; (global-set-key [(control f3)] 'highlight-symbol-at-point)
+;; (global-set-key [f3] 'highlight-symbol-next)
+;; (global-set-key [(shift f3)] 'highlight-symbol-prev)
+;; (global-set-key [(meta f3)] 'highlight-symbol-prev)
 
 
 ;;; git support
@@ -54,20 +69,31 @@
 ;; (load "/usr/share/doc/git-core/contrib/emacs/vc-git.el")
 ;; (add-to-list 'vc-handled-backends 'GIT)
 
-;; magit / egg
-(load "~/.emacs.d/egg/egg.el")
-(load "~/.emacs.d/egg/egg-grep.el")
-(require 'egg)
+
+;; egg
+;; (load "~/.emacs.d/egg/egg.elc")
+;; (load "~/.emacs.d/egg/egg-grep.elc")
+;; (require 'egg)
+(load "~/.emacs.d/magit/magit-key-mode.el")
+(load "~/.emacs.d/magit/magit-bisect.el")
+(load "~/.emacs.d/magit/magit.el")
+(load "~/.emacs.d/magit/contrib/magit-classic-theme.el")
+(require 'magit)
+(global-set-key (kbd "C-x g") 'magit-status)
+
+
+;; change magit diff colors
+(eval-after-load 'magit
+  '(progn
+     (set-face-foreground 'magit-diff-add "green3")
+     (set-face-foreground 'magit-diff-del "red3")
+     (set-face-background 'magit-item-highlight "#2e3436")
+     (when (not window-system)
+       (set-face-background 'magit-item-highlight "black"))))
 
 
 ;; ibuffer by default
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-
-
-
-;;; nxhtml-mode
-;; (load  "/home/kuba/.emacs.d/nxhtml/autostart")
-
 
 
 ;; php mode
@@ -75,22 +101,18 @@
 (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
 
 
-
-;;; django-mode
-(load "~/.emacs.d/django-mode.el")
-(add-to-list 'auto-mode-alist '("\\.html\\'" . django-mode))
-
-
-
 ;; Smooth scrolling mode
-(load "/home/kuba/.emacs.d/smooth-scrolling.el")
-
+(load "/home/kuba/.emacs.d/smooth-scrolling.elc")
 
 
 ;; javascript mode
-(load "~/.emacs.d/javascript.el")
+(load "~/.emacs.d/javascript.elc")
 (add-to-list 'auto-mode-alist '("\\.js\\'" . javascript-mode))
+(setq javascript-indent-level 2)
 
+
+;; coffee script mode
+(load "~/.emacs.d/coffee-mode.elc")
 
 
 ;; java mode fixxes
@@ -98,15 +120,12 @@
 (c-set-offset 'arglist-close 0)
 
 
-
-;; devils's pie mode 
+;; devils's pie mode
 (add-to-list 'auto-mode-alist '("\\.ds\\'" . lisp-mode))
 
 
-
 ;; graphviz-mode
-(load-file "~/.emacs.d/graphviz-dot-mode.el")
-
+;; (load-file "~/.emacs.d/graphviz-dot-mode.elc")
 
 
 ;; Org mode
@@ -119,15 +138,12 @@
 (setq org-cycle-include-plain-lists t)
 
 
+;; JSP mode, GSP mode
+;; (add-to-list 'auto-mode-alist '("\\.jsp\\'" . html-mode))
+;; (add-to-list 'auto-mode-alist '("\\.gsp\\'" . html-mode))
 
-;; JSP mode 
-(add-to-list 'auto-mode-alist '("\\.jsp\\'" . html-mode))
-
-
-
-;; GSP mode 
-(add-to-list 'auto-mode-alist '("\\.gsp\\'" . html-mode))
-
+;;
+;; (desktop-save-mode 1)
 
 
 ;; yas templates
@@ -140,14 +156,21 @@
 (yas/load-directory "~/.emacs.d/plugins/yasnippet-0.6.1c/snippets")
 
 
-
-(load "~/.emacs.d/tools.el")
-
+(load "~/.emacs.d/tools.elc")
 
 
 (require 'ido)
 (ido-mode t)
 (setq ido-enable-flex-matching t)
+(setq ido-create-new-buffer (quote never))
+(setq ido-enable-flex-matching t)
+(setq ido-enable-last-directory-history nil)
+(setq ido-enable-regexp nil)
+(setq ido-max-directory-size 300000)
+(setq ido-max-file-prompt-width 0.1)
+(setq ido-use-filename-at-point (quote guess))
+(setq ido-use-url-at-point t)
+(setq ido-use-virtual-buffers t)
 
 
 (setq enable-recursive-minibuffers t)
@@ -169,13 +192,11 @@
     (exit-minibuffer)))
 
 
-
-(load "~/.emacs.d/ack.el")
+(load "~/.emacs.d/ack.elc")
 (require 'ack)
 
 
-
-(load "~/.emacs.d/smex.el")
+(load "~/.emacs.d/smex.elc")
 (require 'smex)
 (smex-initialize)
 (global-set-key (kbd "M-x") 'smex)
@@ -184,9 +205,8 @@
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) ;Old M-x.
 
 
-
 ;; apache mode
-(load "~/.emacs.d/apache-mode.el")
+(load "~/.emacs.d/apache-mode.elc")
 (add-to-list 'auto-mode-alist '("\\.htaccess\\'"   . apache-mode))
 (add-to-list 'auto-mode-alist '("httpd\\.conf\\'"  . apache-mode))
 (add-to-list 'auto-mode-alist '("srm\\.conf\\'"    . apache-mode))
@@ -194,17 +214,14 @@
 (add-to-list 'auto-mode-alist '("sites-\\(available\\|enabled\\)/" . apache-mode))
 
 
-
 ;; GO programing language
-(load "~/.emacs.d/go-mode.el")
-(load "~/.emacs.d/go-mode-load.el")
-(require 'go-mode-load)
-
-
+;;(load "~/.emacs.d/go-mode.el")
+;;(load "~/.emacs.d/go-mode-load.el")
+;;(require 'go-mode-load)
 
 
 ;; project management
-(load "/home/kuba/.emacs.d/mk-project/mk-project.el")
+(load "/home/kuba/.emacs.d/mk-project/mk-project.elc")
 (require 'mk-project)
 
 (global-set-key (kbd "C-c p c") 'project-compile)
@@ -223,9 +240,69 @@
 (load "/home/kuba/.emacs.d/projects.el")
 
 
-;; auto-complete-mode
-(add-to-list 'load-path "~/.emacs.d/auto-complete/")
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete/ac-dict")
-(ac-config-default)
-ac-fuzzy-cursor-color
+;; workspace
+(load "~/.emacs.d/escreen.el")
+(escreen-install)
+(load "~/.emacs.d/workspaces.elc")
+(define-key global-map (kbd "C-<tab>") 'workspace-controller)
+
+
+;; let the emacs starter kit to override my settings and add new one
+;; (load "~/.emacs.d/emacs-starter-kit/init.el")
+
+
+;; (load "/home/kuba/.emacs.d/point-stack.el")
+;; (require 'point-stack)
+;; (global-set-key '[(f5)] 'point-stack-push)
+;; (global-set-key '[(f6)] 'point-stack-pop)
+;; (global-set-key '[(f7)] 'point-stack-forward-stack-pop)
+
+
+;; nxhtml-mode and ruby on rails
+;; (load  "~/.emacs.d/nxhtml/autostart")
+;; (setq mumamo-background-colors nil)
+
+;; (add-to-list 'load-path "~/.emacs.d/nxhtml/util")
+;; (require 'mumamo-fun)
+;; (setq mumamo-chunk-coloring 'submode-colored)
+;; (add-to-list 'auto-mode-alist '("\\.rhtml\\'" . eruby-html-mumamo))
+;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-html-mumamo))
+
+
+;; django-mode
+(load "~/.emacs.d/django-mode.elc")
+(add-to-list 'auto-mode-alist '("\\.html\\'" . django-mode))
+
+
+;; d-lang
+(load "~/.emacs.d/d-mode.el")
+(add-to-list 'auto-mode-alist '("\\.d\\'" . d-mode))
+
+
+;; clojure
+(load "~/.emacs.d/clojure-mode.el")
+
+
+;; hl-tags-mode
+(load "~/.emacs.d/hl-tags-mode.el")
+
+
+;; gnus configuration
+;; (setq starttls-use-gnutls t)
+(setq starttls-use-gnutls nil)
+(setq send-mail-function 'smtpmail-send-it
+      message-send-mail-function 'smtpmail-send-it
+      smtpmail-starttls-credentials
+      '(("smtp.gmail.com" 587 nil nil))
+      smtpmail-auth-credentials
+      (expand-file-name "~/.authinfo")
+      smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587
+      smtpmail-debug-info t)
+(require 'smtpmail)
+
+
+;; C, C++ indentation level
+(setq c-default-style "bsd"
+      c-basic-offset 4)

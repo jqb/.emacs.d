@@ -1,6 +1,4 @@
 #contributor : Jimmy Wu <frozenthrone88@gmail.com>
 #name : <div class="...">...</div>
 # --
-<div class="$1">
-  $0
-</div>
+<div class="$1">$0</div>

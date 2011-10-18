@@ -1,5 +1,4 @@
 # contributor: Kuba Janoszek <kuba.janoszek@gmail.com>
 # name: asvar
 # --
-self.$1 = $2$1
-$0
+self.$1 = $2$1$0
