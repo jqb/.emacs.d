@@ -1,0 +1,2 @@
+def ${1:name}(request):
+    return HttpResponse($0)

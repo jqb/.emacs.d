@@ -1,7 +1,0 @@
-# --
-import os 
-PROJECT_ROOT = os.path.dirname(__file__)
-BASE_URL = '/'
-MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'static')
-MEDIA_URL = '/'.join((BASE_URL, 'static')) + '/'
-$0

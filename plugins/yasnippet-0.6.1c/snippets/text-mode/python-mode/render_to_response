@@ -1,4 +1,0 @@
-# --
-render_to_response($1, {
-            '$0',
-            }, context_instance=RequestContext(request))

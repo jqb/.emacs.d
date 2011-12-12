@@ -1,0 +1,4 @@
+# contributor: Kuba Janoszek <kuba.janoszek@gmail.com>
+# name: dimport.json
+# --
+from django.utils import simplejson as json

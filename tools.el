@@ -214,49 +214,140 @@ Delimiters are paired characters: ()[]<>«»“”‘’「」, including \"\"."
 (global-set-key (kbd "C-/") 'comment-or-uncomment-region-or-line)
 
 
+;; multi-occur additional feature
+(defun get-buffers-matching-mode (mode)
+  "Returns a list of buffers where their major-mode is equal to MODE"
+  (let ((buffer-mode-matches '()))
+   (dolist (buf (buffer-list))
+     (with-current-buffer buf
+       (if (eq mode major-mode)
+           (add-to-list 'buffer-mode-matches buf))))
+   buffer-mode-matches))
 
-;; stuff
-(load  "/home/kuba/.emacs.d/multi-term.el")
-(autoload 'multi-term "multi-term" nil t)
-(autoload 'multi-term-next "multi-term" nil t)
+(defun multi-occur-in-this-mode ()
+  "Show all lines matching REGEXP in buffers with this major mode."
+  (interactive)
+  (multi-occur
+   (get-buffers-matching-mode major-mode)
+   (car (occur-read-primary-args))))
 
-(setq multi-term-program "/bin/bash")
-
-(global-set-key (kbd "C-c c") 'multi-term-next)
-(global-set-key (kbd "C-c T") 'multi-term) ;; create a new one
-
-(add-hook 'term-mode-hook
-	  (lambda ()
-	    (define-key term-raw-map (kbd "C-<left>") 'term-send-backward-word)
-	    (define-key term-raw-map (kbd "C-<right>") 'term-send-forward-word)
-	    (define-key term-raw-map (kbd "C-r") 'term-send-reverse-search-history)
-	    (define-key term-raw-map (kbd "<C-backspace>") 'term-send-backward-kill-word)
-	    (setq-default show-trailing-whitespace nil)
-	    (hl-line-mode -1)
-	    ))
-
-;; only needed if you use autopair
-;; (add-hook 'term-mode-hook
-;; 	  '(lambda () (setq autopair-dont-activate t)))
+;; global key for `multi-occur-in-this-mode' - you should change this.
+(global-set-key (kbd "C-<f2>") 'multi-occur-in-this-mode)
 
 
 
-;; (custom-set-variables
-;;  '(term-default-bg-color "#000000") ;; background color (black)
-;;  '(term-default-fg-color "#dddd00")) ;; foreground color (yellow)
+;; ftp support for passive mode
+(defvar ange-ftp-hosts-no-pasv '("localhost")
+  "*List of hosts that do not need PASV (e.g. hosts within your firewall).
+  Used by `ange-ftp-set-passive'.")     ; rephrased, added "*" // era
+
+(defun ange-ftp-set-passive ()
+  "Function to send a PASV command to hosts not named in the variable
+  `ange-ft-hosts-no-pasv'. Intended to be called from the hook variable
+  `ange-ftp-process-startup-hook'."     ; rephrased significantly // era
+  (if (not (member host ange-ftp-hosts-no-pasv))
+      (ange-ftp-raw-send-cmd proc "passive")))
+(add-hook 'ange-ftp-process-startup-hook 'ange-ftp-set-passive)
+
+
+;; ido extension
+(defun ido-goto-symbol (&optional symbol-list)
+  "Refresh imenu and jump to a place in the buffer using Ido."
+  (interactive)
+  (unless (featurep 'imenu)
+    (require 'imenu nil t))
+  (cond
+   ((not symbol-list)
+    (let ((ido-mode ido-mode)
+          (ido-enable-flex-matching
+           (if (boundp 'ido-enable-flex-matching)
+               ido-enable-flex-matching t))
+          name-and-pos symbol-names position)
+      (unless ido-mode
+        (ido-mode 1)
+        (setq ido-enable-flex-matching t))
+      (while (progn
+               (imenu--cleanup)
+               (setq imenu--index-alist nil)
+               (ido-goto-symbol (imenu--make-index-alist))
+               (setq selected-symbol
+                     (ido-completing-read "Symbol? " symbol-names))
+               (string= (car imenu--rescan-item) selected-symbol)))
+      (unless (and (boundp 'mark-active) mark-active)
+        (push-mark nil t nil))
+      (setq position (cdr (assoc selected-symbol name-and-pos)))
+      (cond
+       ((overlayp position)
+        (goto-char (overlay-start position)))
+       (t
+        (goto-char position)))))
+   ((listp symbol-list)
+    (dolist (symbol symbol-list)
+      (let (name position)
+        (cond
+         ((and (listp symbol) (imenu--subalist-p symbol))
+          (ido-goto-symbol symbol))
+         ((listp symbol)
+          (setq name (car symbol))
+          (setq position (cdr symbol)))
+         ((stringp symbol)
+          (setq name symbol)
+          (setq position
+                (get-text-property 1 'org-imenu-marker symbol))))
+        (unless (or (null position) (null name)
+                    (string= (car imenu--rescan-item) name))
+          (add-to-list 'symbol-names name)
+          (add-to-list 'name-and-pos (cons name position))))))))
+
+
+(defun recentf-ido-find-file ()
+  "Find a recent file using ido."
+  (interactive)
+  (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
+    (when file
+      (find-file file))))
+
+
+(defun ido-goto-bookmark (bookmark)
+  (interactive
+   (list (bookmark-completing-read "Jump to bookmark"
+                                   bookmark-current-bookmark)))
+  (unless bookmark
+    (error "No bookmark specified"))
+  (let ((filename (bookmark-get-filename bookmark)))
+    (ido-set-current-directory
+     (if (file-directory-p filename)
+         filename
+       (file-name-directory filename)))
+    (setq ido-exit        'refresh
+          ido-text-init   ido-text
+          ido-rotate-temp t)
+    (exit-minibuffer)))
+
+
+(defun duplicate-current-line-or-region (arg)
+  "Duplicates the current line or region ARG times.
+If there's no region, the current line will be duplicated. However, if
+there's a region, all lines that region covers will be duplicated."
+  (interactive "p")
+  (let (beg end (origin (point)))
+    (if (and mark-active (> (point) (mark)))
+        (exchange-point-and-mark))
+    (setq beg (line-beginning-position))
+    (if mark-active
+        (exchange-point-and-mark))
+    (setq end (line-end-position))
+    (let ((region (buffer-substring-no-properties beg end)))
+      (dotimes (i arg)
+        (goto-char end)
+        (newline)
+        (insert region)
+        (setq end (point)))
+      (goto-char (+ origin (* (length region) arg) arg)))))
+
+
+;; duplicate the current line or region
+(global-set-key (kbd "C-c d") 'duplicate-current-line-or-region)
 
 
 
-;; ;; enable cua and transient mark modes in term-line-mode
-;; (defadvice term-line-mode (after term-line-mode-fixes ())
-;;   (set (make-local-variable 'cua-mode) t)
-;;   (set (make-local-variable 'transient-mark-mode) t))
-;; (ad-activate 'term-line-mode)
-;; ;; disable cua and transient mark modes in term-char-mode
-;; (defadvice term-char-mode (after term-char-mode-fixes ())
-;;   (set (make-local-variable 'cua-mode) nil)
-;;   (set (make-local-variable 'transient-mark-mode) nil))
-;; (ad-activate 'term-char-mode)
-
-;; (global-set-key (kbd "C-c C-j") 'term-line-mode)
-;; (global-set-key (kbd "C-c C-k") 'term-char-mode)

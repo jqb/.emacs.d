@@ -1,0 +1,4 @@
+# contributor: Kuba Janoszek <kuba.janoszek@gmail.com>
+# name: tuple.pair
+# --
+("$1", "$2")$0

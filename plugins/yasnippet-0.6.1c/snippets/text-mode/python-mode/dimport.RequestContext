@@ -1,0 +1,4 @@
+# contributor: Kuba Janoszek <kuba.janoszek@gmail.com>
+# name: dimport.RequestContext
+# --
+from django.template import RequestContext
