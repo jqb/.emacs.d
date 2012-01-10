@@ -33,7 +33,7 @@
 
 
 ;; javascript mode
-(setq js-indent-level 4)
+(setq js-indent-level 2)
 
 
 ;; dired
@@ -53,15 +53,6 @@
 (global-set-key (kbd "C-x p") (lambda ()
                                 (interactive)
                                 (other-window -1))) ;; back one
-
-
-;; Maybe those are good one?
-;; (global-set-key (kbd "C-l") 'previous-line)
-;; (global-set-key (kbd "c-.") 'forward-line)
-;; (global-set-key (kbd "C-,") 'backward-char)
-;; (global-set-key (kbd "C-;") 'forward-char)
-;; (global-set-key (kbd "M-,") 'backward-word)
-;; (global-set-key (kbd "M-;") 'forward-word)
 
 
 (load "~/.emacs.d/tools.el")
@@ -194,7 +185,10 @@
 
 
 (require 'django-mode)
+(defun my-django-mode-hook ()
+  (setq tab-width 2))
 (add-to-list 'auto-mode-alist '("\\.html\\'" . django-mode))
+(add-to-list 'django-mode-hook 'my-django-mode-hook)
 
 
 (require 'd-mode)
@@ -255,3 +249,26 @@
 
 ;; (when (not package-archive-contents)
 ;;   (package-refresh-contents))
+
+
+;; cycle through buffers
+(global-set-key (kbd "<C-tab>") 'bury-buffer)
+
+
+;; (global-set-key (kbd "M-l") 'backward-kill-word)
+;; (global-set-key (kbd "C-l") 'backward-delete-char)
+(global-set-key (kbd "M-p") 'backward-word)
+(global-set-key (kbd "M-n") 'forward-word)
+
+
+;; Maybe those are good one?
+;; (global-set-key (kbd "C-l") 'previous-line)
+;; (global-set-key (kbd "c-.") 'forward-line)
+;; (global-set-key (kbd "C-,") 'backward-char)
+;; (global-set-key (kbd "C-;") 'forward-char)
+;; (global-set-key (kbd "M-,") 'backward-word)
+;; (global-set-key (kbd "M-;") 'forward-word)
+
+
+;; use hippie-expand instead of dabbrev
+;; (global-set-key (kbd "M-/") 'hippie-expand)
