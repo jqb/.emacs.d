@@ -1,6 +1,5 @@
-(load "~/.emacs.d/xemacs-only.el")
-(load "~/.emacs.d/console-emacs-only.el")
-
+(unless window-system (load "~/.emacs.d/console-emacs-only.el"))
+(if window-system (load "~/.emacs.d/xemacs-only.el"))
 
 (setq x-select-enable-clipboard t)
 (setq-default show-trailing-whitespace t)
@@ -25,6 +24,7 @@
 ;; (set-face-italic-p 'italic nil)
 (setq visible-bell nil)
 (setq enable-recursive-minibuffers t)
+(delete-selection-mode 1) ; delete seleted text when typing
 
 
 ;; C, C++ indentation level
@@ -32,12 +32,11 @@
       c-basic-offset 4)
 
 
-;; javascript mode
-(setq js-indent-level 2)
-
-
 ;; dired
 (global-set-key (kbd "C-x C-j") 'dired-jump)
+(eval-after-load "dired-aux"
+  '(add-to-list 'dired-compress-file-suffixes
+		'("\\.zip\\'" ".zip" "unzip")))
 
 
 ;; ibuffer by default
@@ -107,10 +106,9 @@
 
 
 (require 'highlight-symbol)
-;; (global-set-key [(control f3)] 'highlight-symbol-at-point)
-;; (global-set-key [f3] 'highlight-symbol-next)
-;; (global-set-key [(shift f3)] 'highlight-symbol-prev)
-;; (global-set-key [(meta f3)] 'highlight-symbol-prev)
+(global-set-key (kbd "C-1") 'highlight-symbol-at-point)
+(global-set-key (kbd "C-3") 'highlight-symbol-next)
+(global-set-key (kbd "C-2") 'highlight-symbol-prev)
 
 
 (require 'magit)
@@ -131,7 +129,8 @@
 ;; java mode
 (defun my-java-mode-hook ()
   (c-set-offset 'arglist-intro 4)
-  (c-set-offset 'arglist-close 0))
+  (c-set-offset 'arglist-close 0)
+  (setq tab-width 4))
 (add-hook 'java-mode-hook 'my-java-mode-hook)
 
 
@@ -199,6 +198,34 @@
 (add-to-list 'auto-mode-alist '("\\.less\\'" . less-mode))
 
 
+;; javascript mode
+(defun my-js-mode-hook ()
+  (setq tab-width 4)
+  (setq js-indent-level 4)
+  (setq indent-tab-mode t)
+  )
+(add-hook 'js-mode-hook 'my-js-mode-hook)
+
+
+;; js docs
+(require 'js-doc)
+(add-hook 'js2-mode-hook
+          '(lambda ()
+	     (define-key js2-mode-map "\C-ci" 'js-doc-insert-function-doc)
+	     (define-key js2-mode-map "@" 'js-doc-insert-tag))
+)
+
+
+;; nsi-mode
+(defalias 'nsi-point 'py-point)
+(require 'nsis-mode)
+(autoload 'nsis-mode "nsis-mode" "NSIS mode" t)
+(setq auto-mode-alist (append '(("\\.\\([Nn][Ss][Ii]\\)$" .
+                                 nsis-mode)) auto-mode-alist))
+(setq auto-mode-alist (append '(("\\.\\([Nn][Ss][Hh]\\)$" .
+                                 nsis-mode)) auto-mode-alist))
+
+
 ;; gnus configuration
 ;; (setq gnus-select-method '(nnml ""))
 (setq gnus-permanently-visible-groups "mail")
@@ -252,13 +279,13 @@
 
 
 ;; cycle through buffers
-(global-set-key (kbd "<C-tab>") 'bury-buffer)
+;; (global-set-key (kbd "<C-tab>") 'bury-buffer)
 
 
 ;; (global-set-key (kbd "M-l") 'backward-kill-word)
 ;; (global-set-key (kbd "C-l") 'backward-delete-char)
-(global-set-key (kbd "M-p") 'backward-word)
-(global-set-key (kbd "M-n") 'forward-word)
+;; (global-set-key (kbd "M-p") 'backward-word)
+;; (global-set-key (kbd "M-n") 'forward-word)
 
 
 ;; Maybe those are good one?
@@ -272,3 +299,12 @@
 
 ;; use hippie-expand instead of dabbrev
 ;; (global-set-key (kbd "M-/") 'hippie-expand)
+
+
+;; keys
+(global-set-key (kbd "C-M-n") 'forward-paragraph)
+(global-set-key (kbd "C-M-p") 'backward-paragraph)
+
+;; undo & redo
+;; (global-set-key (kbd "C-z") 'undo)
+;; (global-set-key (kbd "C-Z") 'redo)
