@@ -33,3 +33,6 @@
 
 ;; trick for full screen on windows
 (add-hook 'window-setup-hook (lambda () (w32-send-sys-command #xf030)))
+(add-hook 'window-setup-hook (lambda () ((custom-set-faces
+					  'default ((t (:family "Courier New"))))
+					 )))
