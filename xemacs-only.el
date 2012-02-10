@@ -29,3 +29,7 @@
 (add-to-list 'default-frame-alist '(alpha 90 90))
 ;; (add-hook 'after-make-frame-functions 'fullscreen)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; end of xemacs settings
+
+
+;; trick for full screen on windows
+(add-hook 'window-setup-hook (lambda () (w32-send-sys-command #xf030)))
