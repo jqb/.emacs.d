@@ -32,26 +32,64 @@
       c-basic-offset 4)
 
 
-;; dired
-(global-set-key (kbd "C-x C-j") 'dired-jump)
-(eval-after-load "dired-aux"
-  '(add-to-list 'dired-compress-file-suffixes
-		'("\\.zip\\'" ".zip" "unzip")))
-
+;; GLOBAL KEY BINDINGS
+(global-set-key (kbd "C-c n") 'delete-trailing-whitespace)
+(global-set-key (kbd "C-x p") (lambda ()
+                                (interactive)
+                                (other-window -1))) ;; back one
 
 ;; ibuffer by default
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
 
+(global-set-key (kbd "M-k") 'previous-line)
+(global-set-key (kbd "M-,") 'forward-line)
+(global-set-key (kbd "M-m") 'backward-char)
+(global-set-key (kbd "M-l") 'forward-char)
+(global-set-key (kbd "M-n") 'backward-word)
+
+
+(global-set-key (kbd "M-o") 'forward-word)
+(global-set-key (kbd "M-p") 'forward-word)
+
+
+(global-set-key (kbd "M-b") 'move-beginning-of-line)
+(global-set-key (kbd "M-0") 'move-end-of-line)
+
+
+(global-set-key (kbd "M-f") 'delete-char)
+(global-set-key (kbd "M-d") 'backward-delete-char-untabify)
+
+
+;; use hippie-expand instead of dabbrev
+;; (global-set-key (kbd "M-/") 'hippie-expand)
+
+
+(global-set-key (kbd "M-]") 'forward-paragraph)
+(global-set-key (kbd "M-[") 'backward-paragraph)
+
+
+(global-set-key (kbd "M-e") 'backward-kill-word)
+(global-set-key (kbd "M-r") 'kill-word)
+(global-set-key (kbd "M-4") 'kill-line)
+
+
+;; undo & redo
+;; (global-set-key (kbd "C-z") 'undo)
+;; (global-set-key (kbd "C-Z") 'redo)
+;; END OF GLOBAL KEY BINDING
+
+
+;; dired
+(global-set-key (kbd "C-x C-j") 'dired-jump)
+(eval-after-load "dired-aux"
+  '(add-to-list 'dired-compress-file-suffixes
+		'("\\.zip\\'" ".zip" "unzip"))
+  )
+
+
 ;; devils's pie mode
 (add-to-list 'auto-mode-alist '("\\.ds\\'" . lisp-mode))
-
-
-;; global key bindings
-(global-set-key (kbd "C-c n") 'delete-trailing-whitespace)
-(global-set-key (kbd "C-x p") (lambda ()
-                                (interactive)
-                                (other-window -1))) ;; back one
 
 
 (load "~/.emacs.d/tools.el")
@@ -280,31 +318,3 @@
 
 ;; cycle through buffers
 ;; (global-set-key (kbd "<C-tab>") 'bury-buffer)
-
-
-;; (global-set-key (kbd "M-l") 'backward-kill-word)
-;; (global-set-key (kbd "C-l") 'backward-delete-char)
-;; (global-set-key (kbd "M-p") 'backward-word)
-;; (global-set-key (kbd "M-n") 'forward-word)
-
-
-;; Maybe those are good one?
-;; (global-set-key (kbd "C-l") 'previous-line)
-;; (global-set-key (kbd "c-.") 'forward-line)
-;; (global-set-key (kbd "C-,") 'backward-char)
-;; (global-set-key (kbd "C-;") 'forward-char)
-;; (global-set-key (kbd "M-,") 'backward-word)
-;; (global-set-key (kbd "M-;") 'forward-word)
-
-
-;; use hippie-expand instead of dabbrev
-;; (global-set-key (kbd "M-/") 'hippie-expand)
-
-
-;; keys
-(global-set-key (kbd "C-M-n") 'forward-paragraph)
-(global-set-key (kbd "C-M-p") 'backward-paragraph)
-
-;; undo & redo
-;; (global-set-key (kbd "C-z") 'undo)
-;; (global-set-key (kbd "C-Z") 'redo)
