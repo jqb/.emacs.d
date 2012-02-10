@@ -94,6 +94,7 @@
 
 (load "~/.emacs.d/tools.el")
 (add-to-list 'load-path "~/.emacs.d/elpa/")
+(add-to-list 'load-path "~/.emacs.d/magit/")
 (add-to-list 'load-path "~/.emacs.d/plugins/")
 (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet-0.6.1c")
 
