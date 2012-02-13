@@ -31,6 +31,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; end of xemacs settings
 
 
+
+;; FOR WINDOWS
 (defun my-windows-custom-face ()
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
@@ -41,6 +43,8 @@
    '(cursor ((t (:background "white")))))
   )
 
-;; trick for full screen on windows
-(add-hook 'window-setup-hook (lambda () (w32-send-sys-command #xf030)))
-(add-hook 'window-setup-hook 'my-windows-custom-face)
+(if (fboundp 'w32-send-sys-command)
+    (;; trick for full screen on windows
+     (add-hook 'window-setup-hook (lambda () (w32-send-sys-command #xf030)))
+     (add-hook 'window-setup-hook 'my-windows-custom-face)
+     ))
