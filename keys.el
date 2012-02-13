@@ -1,52 +1,49 @@
-(defun close-current-buffer ()
-"Close the current buffer.
+;; GLOBAL KEY BINDINGS
+(global-set-key (kbd "C-c n") 'delete-trailing-whitespace)
+(global-set-key (kbd "C-x p") (lambda ()
+                                (interactive)
+                                (other-window -1))) ;; back one
 
-Similar to (kill-buffer (current-buffer)) with the following addition:
+;; ibuffer by default
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 
-• prompt user to save if the buffer has been modified even if the buffer is not associated with a file.
-• make sure the buffer shown after closing is a user buffer.
-• if the buffer is a file, add the path to the list recently-closed-buffers.
 
-A emacs buffer is one who's name starts with *.
-Else it is a user buffer."
- (interactive)
- (let (emacsBuff-p isEmacsBufferAfter)
-   (if (string-match "^*" (buffer-name))
-       (setq emacsBuff-p t)
-     (setq emacsBuff-p nil))
+;; (global-set-key (kbd "M-k") 'previous-line)
+;; (global-set-key (kbd "M-,") 'forward-line)
+;; (global-set-key (kbd "M-m") 'backward-char)
+;; (global-set-key (kbd "M-l") 'forward-char)
+;; (global-set-key (kbd "M-n") 'backward-word)
 
-   ;; offer to save buffers that are non-empty and modified, even for non-file visiting buffer. (because kill-buffer does not offer to save buffers that are not associated with files)
-   (when (and (buffer-modified-p)
-              (not emacsBuff-p)
-              (not (string-equal major-mode "dired-mode"))
-              (if (equal (buffer-file-name) nil) 
-                  (if (string-equal "" (save-restriction (widen) (buffer-string))) nil t)
-                t
-                )
-              )
-     (if (y-or-n-p
-            (concat "Buffer " (buffer-name) " modified; Do you want to save?"))
-       (save-buffer)
-       (set-buffer-modified-p nil)))
+;; (global-set-key (kbd "M-o") 'forward-word)
+;; (global-set-key (kbd "M-p") 'forward-word)
 
-   ;; save to a list of closed buffer
-   (when (not (equal buffer-file-name nil))
-     (setq recently-closed-buffers
-           (cons (cons (buffer-name) (buffer-file-name)) recently-closed-buffers))
-     (when (> (length recently-closed-buffers) recently-closed-buffers-max)
-           (setq recently-closed-buffers (butlast recently-closed-buffers 1))
-           )
-     )
+;; (global-set-key (kbd "M-b") 'move-beginning-of-line)
+;; (global-set-key (kbd "M-0") 'move-end-of-line)
 
-   ;; close
-   (kill-buffer (current-buffer))
+;; (global-set-key (kbd "M-f") 'delete-char)
+;; (global-set-key (kbd "M-d") 'backward-delete-char-untabify)
 
-   ;; if emacs buffer, switch to a user buffer
-   (if (string-match "^*" (buffer-name))
-       (setq isEmacsBufferAfter t)
-     (setq isEmacsBufferAfter nil))
-   (when isEmacsBufferAfter
-     (next-user-buffer)
-     )
-   )
- )
+;; ;; use hippie-expand instead of dabbrev
+;; ;; (global-set-key (kbd "M-/") 'hippie-expand)
+
+;; (global-set-key (kbd "M-]") 'forward-paragraph)
+;; (global-set-key (kbd "M-[") 'backward-paragraph)
+
+;; (global-set-key (kbd "M-e") 'backward-kill-word)
+;; (global-set-key (kbd "M-r") 'kill-word)
+;; (global-set-key (kbd "M-4") 'kill-line)
+
+(global-set-key (kbd "C-M-b") 'backward-word)
+(global-set-key (kbd "C-M-f") 'forward-word)
+
+(global-set-key (kbd "C-M-n") 'forward-paragraph)
+(global-set-key (kbd "C-M-p") 'backward-paragraph)
+
+;; undo & redo
+;; (global-set-key (kbd "C-z") 'undo)
+;; (global-set-key (kbd "C-Z") 'redo)
+;; END OF GLOBAL KEY BINDING
+
+
+;; dired
+(global-set-key (kbd "C-x C-j") 'dired-jump)

@@ -27,61 +27,20 @@
 (delete-selection-mode 1) ; delete seleted text when typing
 
 
+(load "~/.emacs.d/tools.el")
+(load "~/.emacs.d/keys.el")
+(add-to-list 'load-path "~/.emacs.d/elpa/")
+(add-to-list 'load-path "~/.emacs.d/magit/")
+(add-to-list 'load-path "~/.emacs.d/plugins/")
+(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet-0.6.1c")
+
+
 ;; C, C++ indentation level
 (setq c-default-style "bsd"
       c-basic-offset 4)
 
 
-;; GLOBAL KEY BINDINGS
-(global-set-key (kbd "C-c n") 'delete-trailing-whitespace)
-(global-set-key (kbd "C-x p") (lambda ()
-                                (interactive)
-                                (other-window -1))) ;; back one
-
-;; ibuffer by default
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-
-
-(global-set-key (kbd "M-k") 'previous-line)
-(global-set-key (kbd "M-,") 'forward-line)
-(global-set-key (kbd "M-m") 'backward-char)
-(global-set-key (kbd "M-l") 'forward-char)
-(global-set-key (kbd "M-n") 'backward-word)
-
-
-(global-set-key (kbd "M-o") 'forward-word)
-(global-set-key (kbd "M-p") 'forward-word)
-
-
-(global-set-key (kbd "M-b") 'move-beginning-of-line)
-(global-set-key (kbd "M-0") 'move-end-of-line)
-
-
-(global-set-key (kbd "M-f") 'delete-char)
-(global-set-key (kbd "M-d") 'backward-delete-char-untabify)
-
-
-;; use hippie-expand instead of dabbrev
-;; (global-set-key (kbd "M-/") 'hippie-expand)
-
-
-(global-set-key (kbd "M-]") 'forward-paragraph)
-(global-set-key (kbd "M-[") 'backward-paragraph)
-
-
-(global-set-key (kbd "M-e") 'backward-kill-word)
-(global-set-key (kbd "M-r") 'kill-word)
-(global-set-key (kbd "M-4") 'kill-line)
-
-
-;; undo & redo
-;; (global-set-key (kbd "C-z") 'undo)
-;; (global-set-key (kbd "C-Z") 'redo)
-;; END OF GLOBAL KEY BINDING
-
-
 ;; dired
-(global-set-key (kbd "C-x C-j") 'dired-jump)
 (eval-after-load "dired-aux"
   '(add-to-list 'dired-compress-file-suffixes
 		'("\\.zip\\'" ".zip" "unzip"))
@@ -90,13 +49,6 @@
 
 ;; devils's pie mode
 (add-to-list 'auto-mode-alist '("\\.ds\\'" . lisp-mode))
-
-
-(load "~/.emacs.d/tools.el")
-(add-to-list 'load-path "~/.emacs.d/elpa/")
-(add-to-list 'load-path "~/.emacs.d/magit/")
-(add-to-list 'load-path "~/.emacs.d/plugins/")
-(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet-0.6.1c")
 
 
 (require 'python-mode)
