@@ -42,9 +42,8 @@
    '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "unknown" :family "Courier New"))))
    '(cursor ((t (:background "white")))))
   )
-
 (if (fboundp 'w32-send-sys-command)
-    (;; trick for full screen on windows
-     (add-hook 'window-setup-hook (lambda () (w32-send-sys-command #xf030)))
-     (add-hook 'window-setup-hook 'my-windows-custom-face)
-     ))
+    (add-hook 'window-setup-hook 'my-windows-custom-face))
+;; trick for full screen on windows
+(if (fboundp 'w32-send-sys-command)
+    (add-hook 'window-setup-hook (lambda () (w32-send-sys-command #xf030))))

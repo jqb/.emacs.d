@@ -1,5 +1,0 @@
-# contributor: Kuba Janoszek <kuba.janoszek@gmail.com>
-# name: "kw:"
-# dict 'key': value
-# --
-'$1': $2,$0
