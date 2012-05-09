@@ -1,5 +1,19 @@
-(unless window-system (load "~/.emacs.d/console-emacs-only.el"))
+(unless window-system
+  (if (not (eq system-type 'windows-nt))
+      (load "~/.emacs.d/console-emacs-only.el")
+    )
+  )
 (if window-system (load "~/.emacs.d/xemacs-only.el"))
+
+;; extend the path on windows
+(if (eq system-type 'windows-nt)
+    (setenv "PATH"
+	    (concat
+	     "C:/Program Files (x86)/Git/bin" ";"
+	     (getenv "PATH")
+	     )
+	    )
+  )
 
 (setq x-select-enable-clipboard t)
 (setq-default show-trailing-whitespace t)
@@ -285,3 +299,7 @@
 
 (autoload 'bat-mode "bat-mode"
   "DOS and WIndows BAT files" t)
+
+
+(require 'ace-jump-mode)
+(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
