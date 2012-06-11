@@ -18,6 +18,7 @@
 (setq x-select-enable-clipboard t)
 (setq-default show-trailing-whitespace t)
 (setq-default truncate-lines t)
+(setq-default indent-tabs-mode nil)
 (setq line-number-mode t)
 (setq column-number-mode t)
 ;; (global-linum-mode 1)
@@ -207,7 +208,7 @@
 (defun my-js-mode-hook ()
   (setq tab-width 4)
   (setq js-indent-level 4)
-  (setq indent-tab-mode t)
+  (setq indent-tab-mode nil)
   )
 (add-hook 'js-mode-hook 'my-js-mode-hook)
 
