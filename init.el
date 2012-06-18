@@ -150,6 +150,12 @@
 (setq org-cycle-include-plain-lists t)
 
 
+(require 'text-translator)
+(setq text-translator-default-engine "google.com_enpl")
+(global-set-key "\C-x\M-t" 'text-translator)
+(global-set-key "\C-x\M-T" 'text-translator-translate-last-string)
+
+
 (require 'yasnippet)     ;; not yasnippet-bundle
 (require 'dropdown-list) ;; not yasnippet-bundle
 (yas/load-directory "~/.emacs.d/plugins/yasnippet-0.6.1c/snippets")
@@ -201,6 +207,9 @@
 
 
 (require 'less-mode)
+(defun my-less-mode-hook ()
+  (setq less-compile-at-save nil))
+(add-to-list 'less-mode-hook 'my-less-mode-hook)
 (add-to-list 'auto-mode-alist '("\\.less\\'" . less-mode))
 
 
