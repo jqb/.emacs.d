@@ -8,12 +8,7 @@
 ;; extend the path on windows
 (if (eq system-type 'windows-nt)
     (setenv "PATH"
-	    (concat
-	     "C:/Program Files (x86)/Git/bin" ";"
-	     (getenv "PATH")
-	     )
-	    )
-  )
+	    (concat "C:/Program Files (x86)/Git/bin" ";" (getenv "PATH")) ))
 
 (setq x-select-enable-clipboard t)
 (setq-default show-trailing-whitespace t)
@@ -50,6 +45,11 @@
 (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet-0.6.1c")
 
 
+;; escreen
+;; (load "escreen")
+;; (escreen-install)
+
+
 ;; C, C++ indentation level
 (setq c-default-style "bsd"
       c-basic-offset 4)
@@ -63,7 +63,7 @@
 
 
 ;; devils's pie mode
-(add-to-list 'auto-mode-alist '("\\.ds\\'" . lisp-mode))
+;; (add-to-list 'auto-mode-alist '("\\.ds\\'" . lisp-mode))
 
 
 (require 'python-mode)
@@ -85,6 +85,9 @@
 ;;             (setq ad-return-value (current-indentation)))
 ;;         ad-do-it))))
 ;; (ad-activate 'python-calculate-indentation)
+(defun my-python-mode-hook()
+  (hl-line-mode 1))
+(add-hook 'python-mode-hook 'my-python-mode-hook)
 
 
 (require 'projectile)
