@@ -1,8 +1,6 @@
 (unless window-system
   (if (not (eq system-type 'windows-nt))
-      (load "~/.emacs.d/console-emacs-only.el")
-    )
-  )
+      (load "~/.emacs.d/console-emacs-only.el")))
 (if window-system (load "~/.emacs.d/xemacs-only.el"))
 
 ;; extend the path on windows
@@ -10,31 +8,34 @@
     (setenv "PATH"
 	    (concat "C:/Program Files (x86)/Git/bin" ";" (getenv "PATH")) ))
 
+
+(setq backup-inhibited t) ; turn off backup files
 (setq x-select-enable-clipboard t)
-(setq-default show-trailing-whitespace t)
-(setq-default truncate-lines t)
-(setq-default indent-tabs-mode nil)
 (setq line-number-mode t)
 (setq column-number-mode t)
-;; (global-linum-mode 1)
-;; (tool-bar-mode nil)
+(setq visible-bell nil)
+(setq enable-recursive-minibuffers t)
 (setq scroll-step 1)
+(setq auto-save-default nil)
+
+(show-paren-mode 1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
+(delete-selection-mode 1) ; delete seleted text when typing
 (global-hl-line-mode -1)
+
 (fset 'yes-or-no-p 'y-or-n-p)
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
-(global-set-key [f12] 'menu-bar-mode)
-(setq auto-save-default nil)
-(show-paren-mode 1)
+
 (set-face-bold-p 'font-lock-keyword-face t)
 ;; (set-face-italic-p 'font-lock-comment-face t)
 ;; (set-face-italic-p 'italic nil)
-(setq visible-bell nil)
-(setq enable-recursive-minibuffers t)
-(delete-selection-mode 1) ; delete seleted text when typing
+
+(setq-default show-trailing-whitespace t)
+(setq-default truncate-lines t)
+(setq-default indent-tabs-mode nil)
 
 
 (load "~/.emacs.d/tools.el")
@@ -43,6 +44,17 @@
 (add-to-list 'load-path "~/.emacs.d/magit/")
 (add-to-list 'load-path "~/.emacs.d/plugins/")
 (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet-0.6.1c")
+
+
+;; linum mode
+(global-linum-mode -1)  ;; I'm turning it on only for code edition see below
+(setq linum-format "%d ")
+
+
+;; eshell
+(defun my-eshell-hook()
+  (setq-default show-trailing-whitespace nil))
+(add-hook 'eshell-mode-hook 'my-eshell-hook)
 
 
 ;; escreen
@@ -58,8 +70,7 @@
 ;; dired
 (eval-after-load "dired-aux"
   '(add-to-list 'dired-compress-file-suffixes
-		'("\\.zip\\'" ".zip" "unzip"))
-  )
+		'("\\.zip\\'" ".zip" "unzip")))
 
 
 ;; devils's pie mode
@@ -85,9 +96,6 @@
 ;;             (setq ad-return-value (current-indentation)))
 ;;         ad-do-it))))
 ;; (ad-activate 'python-calculate-indentation)
-(defun my-python-mode-hook()
-  (hl-line-mode 1))
-(add-hook 'python-mode-hook 'my-python-mode-hook)
 
 
 (require 'projectile)
@@ -103,6 +111,8 @@
 (require 'clojure-mode)
 (require 'hl-tags-mode)
 (require 'ack)
+
+
 (require 'tramp)
 (setq tramp-default-method "ssh")
 
@@ -127,7 +137,7 @@
      (set-face-foreground 'magit-diff-del "red3")
      (set-face-background 'magit-item-highlight "#2e3436")
      (when (not window-system)
-       (set-face-background 'magit-item-highlight "black"))))
+       (set-face-background 'magit-item-highlight "gray13"))))
 (global-set-key (kbd "C-x g") 'magit-status)
 
 
@@ -227,11 +237,10 @@
 
 ;; js docs
 (require 'js-doc)
-(add-hook 'js2-mode-hook
-          '(lambda ()
-	     (define-key js2-mode-map "\C-ci" 'js-doc-insert-function-doc)
-	     (define-key js2-mode-map "@" 'js-doc-insert-tag))
-)
+(defun my-js-mode-hook ()
+  (define-key js2-mode-map "\C-ci" 'js-doc-insert-function-doc)
+  (define-key js2-mode-map "@" 'js-doc-insert-tag))
+(add-hook 'js2-mode-hook 'my-js-mode-hook)
 
 
 ;; nsi-mode
@@ -311,8 +320,22 @@
        auto-mode-alist))
 
 (autoload 'bat-mode "bat-mode"
-  "DOS and WIndows BAT files" t)
+  "DOS and Windows BAT files" t)
 
 
 (require 'ace-jump-mode)
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+
+
+
+;; CODING HOOK
+(defun my-coding-mode-hook()
+  (hl-line-mode 1)
+  (linum-mode 1))
+(add-hook 'python-mode-hook 'my-coding-mode-hook)
+(add-hook 'java-mode-hook 'my-coding-mode-hook)
+(add-hook 'c-mode-hook 'my-coding-mode-hook)
+(add-hook 'c++-mode-hook 'my-coding-mode-hook)
+(add-hook 'clojure-mode-hook 'my-coding-mode-hook)
+(add-hook 'emacs-lisp-mode-hook 'my-coding-mode-hook)
+(add-hook 'sh-mode-hook 'my-coding-mode-hook)

@@ -147,15 +147,19 @@ Delimiters are paired characters: ()[]<>«»“”‘’「」, including \"\"."
               ("emacs" (or
                         (name . "^\\*scratch\\*$")
                         (name . "^\\*Messages\\*$")))
-              ("gnus" (or
-                       (mode . message-mode)
-                       (mode . bbdb-mode)
-                       (mode . mail-mode)
-                       (mode . gnus-group-mode)
-                       (mode . gnus-summary-mode)
-                       (mode . gnus-article-mode)
-                       (name . "^\\.bbdb$")
-                       (name . "^\\.newsrc-dribble")))))))
+              ;; ("gnus" (or
+              ;;          (mode . message-mode)
+              ;;          (mode . bbdb-mode)
+              ;;          (mode . mail-mode)
+              ;;          (mode . gnus-group-mode)
+              ;;          (mode . gnus-summary-mode)
+              ;;          (mode . gnus-article-mode)
+              ;;          (name . "^\\.bbdb$")
+              ;;          (name . "^\\.newsrc-dribble")))
+              ("emacs lisp" (or
+		       (mode . emacs-lisp-mode)
+                       ))
+              ))))
 (add-hook 'ibuffer-mode-hook
          (lambda ()
            (ibuffer-switch-to-saved-filter-groups "default")))

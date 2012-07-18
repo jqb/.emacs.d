@@ -1,4 +1,6 @@
 ;; GLOBAL KEY BINDINGS
+(global-set-key [f12] 'menu-bar-mode)
+
 (global-set-key (kbd "C-c n") 'delete-trailing-whitespace)
 (global-set-key (kbd "C-x p") (lambda ()
                                 (interactive)
