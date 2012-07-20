@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# name: defm
+# name: comsect
 # contributor: Jakub Janoszek (kuba.janoszek@gmail.com)
 # --
 # ${1:name} ######################################
-# END OF $1 ######################################
 $0
+# END OF $1 ######################################

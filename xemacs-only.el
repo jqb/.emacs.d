@@ -19,15 +19,23 @@
  '(cursor ((t (:background "white")))))
 
 
-;; ;; fullscreen stuff
-(defun fullscreen (&optional f)
+(defun maximize-screen (&optional f)
+       (interactive)
+       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+               '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
+       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+               '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
+(global-set-key [f11] 'maximize-screen)
+
+
+(defun full-screen (&optional f)
   (interactive)
   (set-frame-parameter f 'fullscreen
 		       (if (frame-parameter f 'fullscreen) nil 'fullboth)))
+(global-set-key [C-f11] 'full-screen)
 
-(global-set-key [f11] 'fullscreen)
+
 (add-to-list 'default-frame-alist '(alpha 90 90))
-;; (add-hook 'after-make-frame-functions 'fullscreen)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; end of xemacs settings
 
 

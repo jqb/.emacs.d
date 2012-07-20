@@ -10,7 +10,7 @@
     (insert "</")(insert txt)(insert ">")
     (goto-char (point-min)))
   )
-(global-set-key (kbd "C-x M-w M-h") 'html-tag-wrap-text)
+;; (global-set-key (kbd "C-x M-w M-h") 'html-tag-wrap-text)
 
 
 
@@ -25,7 +25,7 @@
     (insert "\" %}")
     (goto-char (point-min)))
   )
-(global-set-key (kbd "C-x M-w M-d") 'django-tag-wrap-text)
+;; (global-set-key (kbd "C-x M-w M-d") 'django-tag-wrap-text)
 
 
 
@@ -39,82 +39,7 @@
     (goto-char (point-max))
     (insert ")")(goto-char (point-min)))
   )
-(global-set-key (kbd "C-x M-w M-f") 'wrap-text)
-
-
-(defun quote-wrap-text (b e txt)
-  "simple wrapper"
-  (interactive "r\nMEnter quote to wrap with: ")
-  (save-restriction
-    (narrow-to-region b e)
-    (goto-char (point-min))
-    (insert txt)
-    (goto-char (point-max))
-    (insert txt)(goto-char (point-min)))
-  )
-(global-set-key (kbd "C-x M-w M-q") 'quote-wrap-text)
-
-
-;; by Nikolaj Schumacher, 2008-10-20. Released under GPL.
-(defun semnav-up (arg)
-  (interactive "p")
-  (when (nth 3 (syntax-ppss))
-    (if (> arg 0)
-        (progn
-          (skip-syntax-forward "^\"")
-          (goto-char (1+ (point)))
-          (decf arg))
-      (skip-syntax-backward "^\"")
-      (goto-char (1- (point)))
-      (incf arg)))
-  (up-list arg))
-
-
-;; by Nikolaj Schumacher, 2008-10-20. Released under GPL.
-(defun extend-selection (arg &optional incremental)
-  "Select the current word. Subsequent calls expands the selection to larger semantic unit."
-  (interactive (list (prefix-numeric-value current-prefix-arg)
-                     (or (and transient-mark-mode mark-active)
-                         (eq last-command this-command))))
-  (if incremental
-      (progn
-        (semnav-up (- arg))
-        (forward-sexp)
-        (mark-sexp -1))
-    (if (> arg 1)
-        (extend-selection (1- arg) t)
-      (if (looking-at "\\=\\(\\s_\\|\\sw\\)*\\_>")
-          (goto-char (match-end 0))
-        (unless (memq (char-before) '(?\) ?\"))
-          (forward-sexp)))
-      (mark-sexp -1))))
-(global-set-key (kbd "M-&") 'extend-selection)
-
-
-(defun select-text-in-quote ()
-"Select text between the nearest left and right delimiters.
-Delimiters are paired characters: ()[]<>«»“”‘’「」, including \"\"."
- (interactive)
- (let (b1 b2)
-   (skip-chars-backward "^<>(“{[「«\"‘'")
-   (setq b1 (point))
-   (skip-chars-forward "^<>)”}]」»\"’'")
-   (setq b2 (point))
-   (set-mark b1)
-   )
- )
-(global-set-key (kbd "M-*") 'select-text-in-quote)
-
-
-;; (defun da-match-paren (arg)
-;;   "Go to the matching paren if on a paren."
-;;   (interactive "p")
-;;   (cond ((and mark-active (looking-at "\\s\(")) (forward-list 1))
-;; 	((and mark-active (looking-back "\\s\)")) (backward-list 1))
-;; 	((looking-at "\\s\(") (forward-list 1) (backward-char 1))
-;; 	((looking-at "\\s\)") (forward-char 1) (backward-list 1))
-;; 	))
-;; (global-set-key (kbd "M-[") ‘da-match-paren)
+;; (global-set-key (kbd "C-x M-w M-f") 'wrap-text)
 
 
 ;; rename buffer and file
@@ -147,15 +72,6 @@ Delimiters are paired characters: ()[]<>«»“”‘’「」, including \"\"."
               ("emacs" (or
                         (name . "^\\*scratch\\*$")
                         (name . "^\\*Messages\\*$")))
-              ;; ("gnus" (or
-              ;;          (mode . message-mode)
-              ;;          (mode . bbdb-mode)
-              ;;          (mode . mail-mode)
-              ;;          (mode . gnus-group-mode)
-              ;;          (mode . gnus-summary-mode)
-              ;;          (mode . gnus-article-mode)
-              ;;          (name . "^\\.bbdb$")
-              ;;          (name . "^\\.newsrc-dribble")))
               ("emacs lisp" (or
 		       (mode . emacs-lisp-mode)
                        ))
@@ -163,30 +79,6 @@ Delimiters are paired characters: ()[]<>«»“”‘’「」, including \"\"."
 (add-hook 'ibuffer-mode-hook
          (lambda ()
            (ibuffer-switch-to-saved-filter-groups "default")))
-
-
-(global-set-key (kbd "C-c t t") 'toggle-truncate-lines)
-(global-set-key (kbd "S-M-<left>") 'shrink-window-horizontally)
-(global-set-key (kbd "S-M-<right>") 'enlarge-window-horizontally)
-(global-set-key (kbd "S-M-<down>") 'shrink-window)
-(global-set-key (kbd "S-M-<up>") 'enlarge-window)
-
-(global-set-key (kbd "M-N") 'shrink-window)
-(global-set-key (kbd "M-P") 'enlarge-window)
-
-
-
-;; switching between windows
-(global-set-key (kbd "C-c <C-right>") 'windmove-right)
-(global-set-key (kbd "C-c <C-left>") 'windmove-left)
-(global-set-key (kbd "C-c <C-up>") 'windmove-up)
-(global-set-key (kbd "C-c <C-down>") 'windmove-down)
-
-(global-set-key (kbd "C-c <right>") 'windmove-right)
-(global-set-key (kbd "C-c <left>") 'windmove-left)
-(global-set-key (kbd "C-c <up>") 'windmove-up)
-(global-set-key (kbd "C-c <down>") 'windmove-down)
-
 
 
 ;; tags creation
@@ -215,7 +107,7 @@ Delimiters are paired characters: ()[]<>«»“”‘’「」, including \"\"."
       (if (< (point) (mark))
           (comment-or-uncomment-region (point) (mark))
         (comment-or-uncomment-region (mark) (point)))))
-(global-set-key (kbd "C-/") 'comment-or-uncomment-region-or-line)
+;; (global-set-key (kbd "C-/") 'comment-or-uncomment-region-or-line)
 
 
 ;; multi-occur additional feature
@@ -228,15 +120,14 @@ Delimiters are paired characters: ()[]<>«»“”‘’「」, including \"\"."
            (add-to-list 'buffer-mode-matches buf))))
    buffer-mode-matches))
 
+
 (defun multi-occur-in-this-mode ()
   "Show all lines matching REGEXP in buffers with this major mode."
   (interactive)
   (multi-occur
    (get-buffers-matching-mode major-mode)
    (car (occur-read-primary-args))))
-
-;; global key for `multi-occur-in-this-mode' - you should change this.
-(global-set-key (kbd "C-<f2>") 'multi-occur-in-this-mode)
+;; (global-set-key (kbd "C-<f2>") 'multi-occur-in-this-mode)
 
 
 
@@ -348,7 +239,6 @@ there's a region, all lines that region covers will be duplicated."
         (insert region)
         (setq end (point)))
       (goto-char (+ origin (* (length region) arg) arg)))))
+;; (global-set-key (kbd "C-c d") 'duplicate-current-line-or-region)
 
-
-;; duplicate the current line or region
-(global-set-key (kbd "C-c d") 'duplicate-current-line-or-region)
+(provide 'tools)

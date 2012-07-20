@@ -1,3 +1,9 @@
+(defconst emacs-start-time (current-time))
+
+(unless noninteractive
+  (message "Loading %s..." load-file-name))
+
+
 (unless window-system
   (if (not (eq system-type 'windows-nt))
       (load "~/.emacs.d/console-emacs-only.el")))
@@ -7,6 +13,69 @@
 (if (eq system-type 'windows-nt)
     (setenv "PATH"
 	    (concat "C:/Program Files (x86)/Git/bin" ";" (getenv "PATH")) ))
+
+
+;;;;;;;
+(add-to-list 'load-path "~/.emacs.d/")
+(add-to-list 'load-path "~/.emacs.d/elpa/")
+(add-to-list 'load-path "~/.emacs.d/magit/")
+(add-to-list 'load-path "~/.emacs.d/plugins/")
+(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet-0.6.1c")
+
+(require 'bind-key)
+(require 'use-package)
+;;;;;;;
+
+
+(use-package
+ tools
+ :commands
+ (html-tag-wrap-text
+  django-tag-wrap-text
+  wrap-text
+  rename-file-and-buffer
+  create-tags
+  create-tags-python
+  comment-or-uncomment-region-or-line
+  get-buffers-matching-mode
+  multi-occur-in-this-mode
+  ange-ftp-set-passive
+  ido-goto-symbol
+  recentf-ido-find-file
+  ido-goto-bookmark
+  duplicate-current-line-or-region
+  )
+ :init
+ (progn
+   (bind-key "C-x M-w M-h" 'html-tag-wrap-text)
+   (bind-key "C-x M-w M-d" 'django-tag-wrap-text)
+   (bind-key "C-x M-w M-f" 'wrap-text)
+   (bind-key "C-/" 'comment-or-uncomment-region-or-line)
+   (bind-key "C-<f2>" 'multi-occur-in-this-mode)
+   (bind-key "C-c d" 'duplicate-current-line-or-region)
+
+   (bind-key "C-c t t" 'toggle-truncate-lines)
+   (bind-key "S-M-<left>" 'shrink-window-horizontally)
+   (bind-key "S-M-<right>" 'enlarge-window-horizontally)
+   (bind-key "S-M-<down>" 'shrink-window)
+   (bind-key "S-M-<up>" 'enlarge-window)
+
+   (bind-key "M-N" 'shrink-window)
+   (bind-key "M-P" 'enlarge-window)
+
+   ;; switching between windows
+   (bind-key "C-c <C-right>" 'windmove-right)
+   (bind-key "C-c <C-left>" 'windmove-left)
+   (bind-key "C-c <C-up>" 'windmove-up)
+   (bind-key "C-c <C-down>" 'windmove-down)
+
+   (bind-key "C-c <right>" 'windmove-right)
+   (bind-key "C-c <left>" 'windmove-left)
+   (bind-key "C-c <up>" 'windmove-up)
+   (bind-key "C-c <down>" 'windmove-down)
+   ))
+(load "~/.emacs.d/keys.el")
+(maximize-screen)
 
 
 (setq backup-inhibited t) ; turn off backup files
@@ -38,23 +107,15 @@
 (setq-default indent-tabs-mode nil)
 
 
-(load "~/.emacs.d/tools.el")
-(load "~/.emacs.d/keys.el")
-(add-to-list 'load-path "~/.emacs.d/elpa/")
-(add-to-list 'load-path "~/.emacs.d/magit/")
-(add-to-list 'load-path "~/.emacs.d/plugins/")
-(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet-0.6.1c")
-
-
 ;; linum mode
 (global-linum-mode -1)  ;; I'm turning it on only for code edition see below
 (setq linum-format "%d ")
 
 
-;; eshell
-(defun my-eshell-hook()
-  (setq-default show-trailing-whitespace nil))
-(add-hook 'eshell-mode-hook 'my-eshell-hook)
+;; eshell - I do not use it as much
+;; (defun my-eshell-hook()
+;;   (setq-default show-trailing-whitespace nil))
+;; (add-hook 'eshell-mode-hook 'my-eshell-hook)
 
 
 ;; escreen
@@ -77,7 +138,29 @@
 ;; (add-to-list 'auto-mode-alist '("\\.ds\\'" . lisp-mode))
 
 
-(require 'python-mode)
+(require 'bm)
+(setq bm-electric-show nil)
+(global-set-key (kbd "<C-f1>") 'bm-toggle)
+(global-set-key (kbd "<f2>")   'bm-next)
+(global-set-key (kbd "<S-f2>") 'bm-previous)
+
+
+(require 'popwin)
+(setq display-buffer-function 'popwin:display-buffer)
+(setq popwin:special-display-config
+      '(("*Help*")
+        ("*bm-bookmarks*")
+        ("*Messages*")
+        ("*Occur*")
+        ))
+(global-set-key (kbd "C-c q") popwin:keymap)
+
+
+(use-package
+ python-mode
+ :mode (("\\.py" . python-mode))
+ )
+
 ;; python-mode
 ;; (defadvice python-calculate-indentation (around outdent-closing-brackets)
 ;;   "Handle lines beginning with a closing bracket and indent them so that
@@ -97,38 +180,50 @@
 ;;         ad-do-it))))
 ;; (ad-activate 'python-calculate-indentation)
 
-
-(require 'projectile)
-(projectile-global-mode)
-
-
-(require 'recentf)
-(recentf-mode 1)
+(use-package
+ projectile
+ :init
+ (progn
+   (projectile-global-mode)))
 
 
-(require 'smooth-scrolling)
-(require 'coffee-mode)
-(require 'clojure-mode)
-(require 'hl-tags-mode)
-(require 'ack)
+(use-package smooth-scrolling :defer t)
+(use-package coffee-mode :defer t)
+(use-package clojure-mode :defer t)
+(use-package hl-tags-mode :defer t)
+(use-package ack :defer t)
 
 
-(require 'tramp)
-(setq tramp-default-method "ssh")
+(use-package
+ tramp
+ :defer t
+ :config
+ (progn
+   (setq tramp-default-method "ssh")
+   ))
 
 
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
-(setq uniquify-separator "/")
-(setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
-(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+(use-package
+ uniquify
+ :config
+ (progn
+   (setq uniquify-buffer-name-style 'forward)
+   (setq uniquify-separator "/")
+   (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
+   (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+   ))
 
 
-(require 'highlight-symbol)
-(global-set-key (kbd "C-1") 'highlight-symbol-at-point)
-(global-set-key (kbd "C-3") 'highlight-symbol-next)
-(global-set-key (kbd "C-2") 'highlight-symbol-prev)
-
+(use-package
+ highlight-symbol
+ :defer t
+ :commands (highlight-symbol-at-point highlight-symbol-next highlight-symbol-prev)
+ :init
+ (progn
+   (bind-key "C-1" 'highlight-symbol-at-point)
+   (bind-key "C-3" 'highlight-symbol-next)
+   (bind-key "C-2" 'highlight-symbol-prev)
+  ))
 
 (require 'magit)
 (eval-after-load 'magit ;; change magit diff colors
@@ -141,8 +236,11 @@
 (global-set-key (kbd "C-x g") 'magit-status)
 
 
-(require 'php-mode)
-(add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
+(use-package
+ php-mode
+ :defer t
+ :mode ("\\.php\\'" . php-mode)
+ )
 
 
 ;; java mode
@@ -163,67 +261,121 @@
 (setq org-cycle-include-plain-lists t)
 
 
-(require 'text-translator)
-(setq text-translator-default-engine "google.com_enpl")
-(global-set-key "\C-x\M-t" 'text-translator)
-(global-set-key "\C-x\M-T" 'text-translator-translate-last-string)
+(use-package
+ text-translator
+ :defer t
+ :commands (text-translator text-translator-translate-last-string)
+ :init
+ (progn
+   (setq text-translator-default-engine "google.com_enpl")
+   (bind-key "C-x M-t" 'text-translator)
+   (bind-key "C-x M-T" 'text-translator-translate-last-string)
+   ))
 
 
-(require 'yasnippet)     ;; not yasnippet-bundle
-(require 'dropdown-list) ;; not yasnippet-bundle
-(yas/load-directory "~/.emacs.d/plugins/yasnippet-0.6.1c/snippets")
-(yas/initialize)
+(use-package
+ yasnippet
+ :if (not noninteractive)
+ :diminish yas/minor-mode
+ :commands (yas/minor-mode yas/expand)
+ :init
+ (progn
+   (bind-key "TAB" 'yas/expand))
+ :config
+ (progn
+   (use-package dropdown-list)
+   (yas/load-directory "~/.emacs.d/plugins/yasnippet-0.6.1c/snippets")
+   (yas/initialize))
+ )
 
 
-(require 'ido)
-(ido-mode t)
-(setq ido-enable-flex-matching t)
-(setq ido-create-new-buffer (quote never))
-(setq ido-enable-last-directory-history nil)
-(setq ido-enable-regexp nil)
-(setq ido-max-directory-size 300000)
-(setq ido-max-file-prompt-width 0.1)
-;; (setq ido-use-filename-at-point (quote guess))
-(setq ido-use-url-at-point t)
-(setq ido-use-virtual-buffers t)
-(setq ido-ignore-files '("\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" "\\.dep$" "\\.pyc$" "*.py~"))
-(define-key ido-file-dir-completion-map [(meta control ?b)] 'ido-goto-bookmark)
-(global-set-key (kbd "M-i") 'ido-goto-symbol)
-(global-set-key (kbd "C-x f") 'recentf-ido-find-file)
+(use-package
+ ido
+ :commands
+ (recentf-list
+  ido-find-file
+  ido-goto-bookmark
+  ido-goto-symbol
+  recentf-ido-find-file)
+ :init
+ (progn
+   (bind-key "M-i" 'ido-goto-symbol)
+   (bind-key "C-x f" 'recentf-ido-find-file))
+ :config
+ (progn
+   (use-package recentf
+    :init (progn (recentf-mode 1)))
+
+   (ido-mode t)
+
+   (setq ido-enable-flex-matching t)
+   (setq ido-create-new-buffer (quote never))
+   (setq ido-enable-last-directory-history nil)
+   (setq ido-enable-regexp nil)
+   (setq ido-max-directory-size 300000)
+   (setq ido-max-file-prompt-width 0.1)
+   ;; (setq ido-use-filename-at-point (quote guess))
+   (setq ido-use-url-at-point t)
+   (setq ido-use-virtual-buffers t)
+   (setq ido-ignore-files '("\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" "\\.dep$" "\\.pyc$" "*.py~"))
+
+   (define-key ido-file-dir-completion-map [(meta control ?b)] 'ido-goto-bookmark)
+ ))
 
 
-(require 'smex)
-(smex-initialize)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-(global-set-key (kbd "C-c M-x") 'smex-update-and-run)
-(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) ;Old M-x.
+(use-package
+ smex
+ :defer t
+ :commands (smex smex-major-mode-commands smex-update-and-run)
+ :init
+ (progn
+   (bind-key "M-x" 'smex)
+   (bind-key "M-X" 'smex-major-mode-commands)
+   (bind-key "C-c M-x" 'smex-update-and-run)
+   (bind-key "C-c C-c M-x" 'execute-extended-command)) ;Old M-x.
+ :config
+ (progn
+   (smex-initialize)
+   ))
 
 
-(require 'apache-mode)
-(add-to-list 'auto-mode-alist '("\\.htaccess\\'"   . apache-mode))
-(add-to-list 'auto-mode-alist '("httpd\\.conf\\'"  . apache-mode))
-(add-to-list 'auto-mode-alist '("srm\\.conf\\'"    . apache-mode))
-(add-to-list 'auto-mode-alist '("access\\.conf\\'" . apache-mode))
-(add-to-list 'auto-mode-alist '("sites-\\(available\\|enabled\\)/" . apache-mode))
+(use-package
+ apache-mode
+ :mode
+ (("\\.htaccess\\'"                   . apache-mode)
+  ("httpd\\.conf\\'"                  . apache-mode)
+  ("srm\\.conf\\'"                    . apache-mode)
+  ("access\\.conf\\'"                 . apache-mode)
+  ("sites-\\(available\\|enabled\\)/" . apache-mode)
+  ))
 
 
-(require 'django-mode)
-(defun my-django-mode-hook ()
-  (setq tab-width 2))
-(add-to-list 'auto-mode-alist '("\\.html\\'" . django-mode))
-(add-to-list 'django-mode-hook 'my-django-mode-hook)
+(use-package
+ django-mode
+ :defer t
+ :mode ("\\.html\\'" . django-mode)
+ :config
+ (progn
+   (defun my-django-mode-hook ()
+     (setq tab-width 2))
+   (add-to-list 'django-mode-hook 'my-django-mode-hook)
+   ))
 
 
-(require 'd-mode)
-(add-to-list 'auto-mode-alist '("\\.d\\'" . d-mode))
+(use-package
+ d-mode
+ :mode ("\\.d\\'" . d-mode))
 
 
-(require 'less-mode)
-(defun my-less-mode-hook ()
-  (setq less-compile-at-save nil))
-(add-to-list 'less-mode-hook 'my-less-mode-hook)
-(add-to-list 'auto-mode-alist '("\\.less\\'" . less-mode))
+(use-package
+ less-mode
+ :mode ("\\.less\\'" . less-mode)
+ :config
+ (progn
+   (defun my-less-mode-hook ()
+     (setq less-compile-at-save nil))
+   (add-to-list 'less-mode-hook 'my-less-mode-hook)
+   ))
 
 
 ;; javascript mode
@@ -235,39 +387,45 @@
 (add-hook 'js-mode-hook 'my-js-mode-hook)
 
 
-;; js docs
-(require 'js-doc)
-(defun my-js-mode-hook ()
-  (define-key js2-mode-map "\C-ci" 'js-doc-insert-function-doc)
-  (define-key js2-mode-map "@" 'js-doc-insert-tag))
-(add-hook 'js2-mode-hook 'my-js-mode-hook)
+;; js docs - DOES NOT WORK
+;; (use-package
+;;  js-doc
+;;  :commands (js-doc-insert-function-doc js-doc-insert-tag)
+;;  :init
+;;  (progn
+;;    (bind-key "C-c i" 'js-doc-insert-function-doc js2-mode-map)
+;;    (bind-key "@" 'js-doc-insert-tag js2-mode-map)))
 
 
 ;; nsi-mode
-(defalias 'nsi-point 'py-point)
-(require 'nsis-mode)
-(autoload 'nsis-mode "nsis-mode" "NSIS mode" t)
-(setq auto-mode-alist (append '(("\\.\\([Nn][Ss][Ii]\\)$" .
-                                 nsis-mode)) auto-mode-alist))
-(setq auto-mode-alist (append '(("\\.\\([Nn][Ss][Hh]\\)$" .
-                                 nsis-mode)) auto-mode-alist))
+(use-package
+ nsis-mode
+ :init
+ (progn
+   (defalias 'nsi-point 'py-point))
+ :mode
+ (("\\.\\([Nn][Ss][Ii]\\)$" . nsis-mode)
+  ("\\.\\([Nn][Ss][Hh]\\)$" . nsis-mode))
+ :config
+ (progn
+   (autoload 'nsis-mode "nsis-mode" "NSIS mode" t)))
 
 
 ;; gnus configuration
 ;; (setq gnus-select-method '(nnml ""))
-(setq gnus-permanently-visible-groups "mail")
-(setq gnus-select-method '(nnimap "gmail"
-				  (nnimap-address "imap.gmail.com")
-				  (nnimap-server-port 993)
-				  (nnimap-stream ssl)))
+;; (setq gnus-permanently-visible-groups "mail")
+;; (setq gnus-select-method '(nnimap "gmail"
+;; 				  (nnimap-address "imap.gmail.com")
+;; 				  (nnimap-server-port 993)
+;; 				  (nnimap-stream ssl)))
 
-(setq message-send-mail-function 'smtpmail-send-it
-      smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-      smtpmail-auth-credentials '(("smtp.gmail.com" 587 "kuba.janoszek@gmail.com" nil))
-      smtpmail-default-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587
-      smtpmail-local-domain "janoszek.com")
+;; (setq message-send-mail-function 'smtpmail-send-it
+;;       smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+;;       smtpmail-auth-credentials '(("smtp.gmail.com" 587 "kuba.janoszek@gmail.com" nil))
+;;       smtpmail-default-smtp-server "smtp.gmail.com"
+;;       smtpmail-smtp-server "smtp.gmail.com"
+;;       smtpmail-smtp-service 587
+;;       smtpmail-local-domain "janoszek.com")
 
 
 ;; (setq starttls-use-gnutls nil)
@@ -310,32 +468,34 @@
 
 
 
-;; bat-mode
-(setq auto-mode-alist
-      (append
-       (list (cons "\\.[bB][aA][tT]$" 'bat-mode))
-       ;; For DOS init files
-       (list (cons "CONFIG\\."   'bat-mode))
-       (list (cons "AUTOEXEC\\." 'bat-mode))
-       auto-mode-alist))
+;; bat-mode - NOT IN HEAVY USE
+;; (setq auto-mode-alist
+;;       (append
+;;        (list (cons "\\.[bB][aA][tT]$" 'bat-mode))
+;;        ;; For DOS init files
+;;        (list (cons "CONFIG\\."   'bat-mode))
+;;        (list (cons "AUTOEXEC\\." 'bat-mode))
+;;        auto-mode-alist))
+;;
+;;   (autoload 'bat-mode "bat-mode"
+;;      "DOS and WIndows BAT files" t)
 
-(autoload 'bat-mode "bat-mode"
-  "DOS and Windows BAT files" t)
 
-
-(require 'ace-jump-mode)
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-
+(use-package ace-jump-mode
+  :bind ("C-c SPC" . ace-jump-mode))
 
 
 ;; CODING HOOK
 (defun my-coding-mode-hook()
   (hl-line-mode 1)
   (linum-mode 1))
-(add-hook 'python-mode-hook 'my-coding-mode-hook)
-(add-hook 'java-mode-hook 'my-coding-mode-hook)
-(add-hook 'c-mode-hook 'my-coding-mode-hook)
-(add-hook 'c++-mode-hook 'my-coding-mode-hook)
-(add-hook 'clojure-mode-hook 'my-coding-mode-hook)
+(add-hook 'python-mode-hook     'my-coding-mode-hook)
+(add-hook 'java-mode-hook       'my-coding-mode-hook)
+(add-hook 'c-mode-hook          'my-coding-mode-hook)
+(add-hook 'c++-mode-hook        'my-coding-mode-hook)
+(add-hook 'clojure-mode-hook    'my-coding-mode-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-coding-mode-hook)
-(add-hook 'sh-mode-hook 'my-coding-mode-hook)
+(add-hook 'sh-mode-hook         'my-coding-mode-hook)
+
+
+(dired (concat (getenv "HOME") "/" "docs" "/" "projects"))
