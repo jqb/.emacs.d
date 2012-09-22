@@ -29,22 +29,22 @@
 
 (use-package
  tools
- :commands
- (html-tag-wrap-text
-  django-tag-wrap-text
-  wrap-text
-  rename-file-and-buffer
-  create-tags
-  create-tags-python
-  comment-or-uncomment-region-or-line
-  get-buffers-matching-mode
-  multi-occur-in-this-mode
-  ange-ftp-set-passive
-  ido-goto-symbol
-  recentf-ido-find-file
-  ido-goto-bookmark
-  duplicate-current-line-or-region
-  )
+ ;; :commands
+ ;; (html-tag-wrap-text
+ ;;  django-tag-wrap-text
+ ;;  wrap-text
+ ;;  rename-file-and-buffer
+ ;;  create-tags
+ ;;  create-tags-python
+ ;;  comment-or-uncomment-region-or-line
+ ;;  get-buffers-matching-mode
+ ;;  multi-occur-in-this-mode
+ ;;  ange-ftp-set-passive
+ ;;  ido-goto-symbol
+ ;;  recentf-ido-find-file
+ ;;  ido-goto-bookmark
+ ;;  duplicate-current-line-or-region
+ ;;  )
  :init
  (progn
    (bind-key "C-x M-w M-h" 'html-tag-wrap-text)
@@ -75,7 +75,8 @@
    (bind-key "C-c <down>" 'windmove-down)
    ))
 (load "~/.emacs.d/keys.el")
-(maximize-screen)
+
+(if window-system (maximize-screen))
 
 
 (setq backup-inhibited t) ; turn off backup files
@@ -106,6 +107,8 @@
 (setq-default truncate-lines t)
 (setq-default indent-tabs-mode nil)
 
+(setq dabbrev-case-fold-search nil)
+(setq dabbrev-case-replace t)
 
 ;; linum mode
 (global-linum-mode -1)  ;; I'm turning it on only for code edition see below
@@ -187,11 +190,11 @@
    (projectile-global-mode)))
 
 
-(use-package smooth-scrolling :defer t)
-(use-package coffee-mode :defer t)
-(use-package clojure-mode :defer t)
-(use-package hl-tags-mode :defer t)
-(use-package ack :defer t)
+(use-package smooth-scrolling)
+(use-package coffee-mode)
+(use-package clojure-mode)
+(use-package hl-tags-mode)
+(use-package ack)
 
 
 (use-package
@@ -214,16 +217,12 @@
    ))
 
 
-(use-package
- highlight-symbol
- :defer t
- :commands (highlight-symbol-at-point highlight-symbol-next highlight-symbol-prev)
- :init
- (progn
-   (bind-key "C-1" 'highlight-symbol-at-point)
-   (bind-key "C-3" 'highlight-symbol-next)
-   (bind-key "C-2" 'highlight-symbol-prev)
-  ))
+(require 'highlight-symbol)
+(setq highlight-symbol-idle-delay 0.1)
+(global-set-key (kbd "C-1") 'highlight-symbol-at-point)
+(global-set-key (kbd "C-3") 'highlight-symbol-next)
+(global-set-key (kbd "C-2") 'highlight-symbol-prev)
+
 
 (require 'magit)
 (eval-after-load 'magit ;; change magit diff colors
@@ -273,20 +272,26 @@
    ))
 
 
-(use-package
- yasnippet
- :if (not noninteractive)
- :diminish yas/minor-mode
- :commands (yas/minor-mode yas/expand)
- :init
- (progn
-   (bind-key "TAB" 'yas/expand))
- :config
- (progn
-   (use-package dropdown-list)
-   (yas/load-directory "~/.emacs.d/plugins/yasnippet-0.6.1c/snippets")
-   (yas/initialize))
- )
+(require 'dropdown-list)
+(require 'yasnippet)
+(yas/load-directory "~/.emacs.d/plugins/yasnippet-0.6.1c/snippets")
+(yas/initialize)
+
+;; XXX: This does not work
+;; (use-package
+;;  yasnippet
+;;  :if (not noninteractive)
+;;  :diminish yas/minor-mode
+;;  :commands (yas/minor-mode yas/expand)
+;;  :init
+;;  (progn
+;;    (bind-key "TAB" 'yas/expand))
+;;  :config
+;;  (progn
+;;    (use-package dropdown-list)
+;;    (yas/load-directory "~/.emacs.d/plugins/yasnippet-0.6.1c/snippets")
+;;    (yas/initialize))
+;;  )
 
 
 (use-package
@@ -488,7 +493,9 @@
 ;; CODING HOOK
 (defun my-coding-mode-hook()
   (hl-line-mode 1)
-  (linum-mode 1))
+  (linum-mode 1)
+  (highlight-symbol-mode)
+  )
 (add-hook 'python-mode-hook     'my-coding-mode-hook)
 (add-hook 'java-mode-hook       'my-coding-mode-hook)
 (add-hook 'c-mode-hook          'my-coding-mode-hook)
