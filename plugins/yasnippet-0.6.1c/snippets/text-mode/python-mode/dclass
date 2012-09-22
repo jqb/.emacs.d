@@ -1,0 +1,4 @@
+# -*- coding: utf-8 -*-
+# --
+class ${1:ClassName}(models.Model):
+    $0
