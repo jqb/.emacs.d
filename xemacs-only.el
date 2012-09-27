@@ -11,11 +11,7 @@
  '(tool-bar-mode nil)
  '(tooltip-mode nil))
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "unknown" :family "Courier"))))
+ '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 110 :width normal :foundry "unknown" :family "Ubuntu Mono"))))
  '(cursor ((t (:background "white")))))
 
 
@@ -67,6 +63,10 @@
        "Keyboard macro."
        (interactive "p") (kmacro-exec-ring-item (quote ([C-M-return] 0 "%d")) arg)))
     (add-hook 'window-setup-hook 'kmacro-maximize-screen)
+    (custom-set-faces
+     '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 110 :width normal :foundry "unknown" :family "Courier"))))
+     '(cursor ((t (:background "white")))))
+
   )
 )
 
