@@ -8,6 +8,7 @@
 
 ;; ibuffer by default
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "<C-M-return>") 'ns-toggle-fullscreen)
 
 
 ;; (global-set-key (kbd "M-k") 'previous-line)

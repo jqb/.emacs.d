@@ -15,7 +15,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Ubuntu Mono"))))
+ '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "unknown" :family "Courier"))))
  '(cursor ((t (:background "white")))))
 
 
@@ -40,6 +40,7 @@
 
 
 
+
 ;; FOR WINDOWS
 ;; trick for full screen on windows
 (if (fboundp 'w32-send-sys-command)
@@ -56,3 +57,18 @@
   )
 (if (fboundp 'w32-send-sys-command)
     (add-hook 'window-setup-hook 'my-windows-custom-face))
+
+
+;; FOR MAC
+(if (eq system-type 'darwin)
+  (progn
+    (fset 'kmacro-maximize-screen
+      (lambda (&optional arg)
+       "Keyboard macro."
+       (interactive "p") (kmacro-exec-ring-item (quote ([C-M-return] 0 "%d")) arg)))
+    (add-hook 'window-setup-hook 'kmacro-maximize-screen)
+  )
+)
+
+(if (and window-system (not (eq system-type 'darwin)))
+   (maximize-screen))

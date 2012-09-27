@@ -15,6 +15,15 @@
 	    (concat "C:/Program Files (x86)/Git/bin" ";" (getenv "PATH")) ))
 
 
+;; mac
+(if (eq system-type 'darwin)
+    (setenv "PATH" (concat "/usr/local/bin" ":" (getenv "PATH")) ))
+
+
+;; MAC needs this
+(setq mac-command-modifier 'meta)
+
+
 ;;;;;;;
 (add-to-list 'load-path "~/.emacs.d/")
 (add-to-list 'load-path "~/.emacs.d/elpa/")
@@ -57,10 +66,10 @@
    (bind-key "C-c <left>" 'windmove-left)
    (bind-key "C-c <up>" 'windmove-up)
    (bind-key "C-c <down>" 'windmove-down)
+
+   (bind-key "C-x f" 'recentf-ido-find-file)
    ))
 (load "~/.emacs.d/keys.el")
-
-(if window-system (maximize-screen))
 
 
 (setq backup-inhibited t) ; turn off backup files
@@ -342,7 +351,10 @@
 (use-package
  django-mode
  :defer t
- :mode ("\\.html\\'" . django-mode)
+ :mode (
+   ("\\.html\\'" . django-mode)
+   ("\\.dhtml\\'" . django-mode)
+ )
  :config
  (progn
    (defun my-django-mode-hook ()
@@ -487,6 +499,3 @@
 (add-hook 'clojure-mode-hook    'my-coding-mode-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-coding-mode-hook)
 (add-hook 'sh-mode-hook         'my-coding-mode-hook)
-
-
-(dired (concat (getenv "HOME") "/" "docs" "/" "projects"))
