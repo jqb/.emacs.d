@@ -49,3 +49,8 @@
 
 ;; dired
 (global-set-key (kbd "C-x C-j") 'dired-jump)
+
+
+;; switch buffer
+(global-set-key (kbd "C-x .") 'next-buffer)
+(global-set-key (kbd "C-x ,") 'previous-buffer)

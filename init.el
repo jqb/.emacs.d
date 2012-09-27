@@ -29,22 +29,6 @@
 
 (use-package
  tools
- ;; :commands
- ;; (html-tag-wrap-text
- ;;  django-tag-wrap-text
- ;;  wrap-text
- ;;  rename-file-and-buffer
- ;;  create-tags
- ;;  create-tags-python
- ;;  comment-or-uncomment-region-or-line
- ;;  get-buffers-matching-mode
- ;;  multi-occur-in-this-mode
- ;;  ange-ftp-set-passive
- ;;  ido-goto-symbol
- ;;  recentf-ido-find-file
- ;;  ido-goto-bookmark
- ;;  duplicate-current-line-or-region
- ;;  )
  :init
  (progn
    (bind-key "C-x M-w M-h" 'html-tag-wrap-text)
