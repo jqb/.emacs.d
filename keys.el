@@ -55,3 +55,11 @@
 ;; switch buffer
 (global-set-key (kbd "C-x .") 'next-buffer)
 (global-set-key (kbd "C-x ,") 'previous-buffer)
+
+
+;; changing size of buffers
+(global-set-key (kbd "C-<") (kbd "C-u - 1 0 S-M-<left>"))
+(global-set-key (kbd "C->") (kbd "C-u - 1 0 S-M-<right>"))
+
+(global-set-key (kbd "C-{") (kbd "C-u - 1 0 S-M-<up>"))
+(global-set-key (kbd "C-:") (kbd "C-u - 1 0 S-M-<down>"))
