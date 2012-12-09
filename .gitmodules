@@ -1,3 +1,6 @@
 [submodule "magit"]
       path = magit
       url = git@github.com:magit/magit.git
+[submodule "plugins/mark-multiple"]
+	path = plugins/mark-multiple
+	url = https://github.com/magnars/mark-multiple.el.git

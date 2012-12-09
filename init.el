@@ -29,6 +29,7 @@
 (add-to-list 'load-path "~/.emacs.d/elpa/")
 (add-to-list 'load-path "~/.emacs.d/magit/")
 (add-to-list 'load-path "~/.emacs.d/plugins/")
+(add-to-list 'load-path "~/.emacs.d/plugins/mark-multiple/")
 (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet-0.6.1c")
 
 (require 'bind-key)
@@ -70,6 +71,9 @@
    (bind-key "C-x f" 'recentf-ido-find-file)
    ))
 (load "~/.emacs.d/keys.el")
+
+;; (require 'sunrise-commander)
+;; (require 'sunrise-x-tree)
 
 
 (setq backup-inhibited t) ; turn off backup files
@@ -148,6 +152,7 @@
         ("*bm-bookmarks*")
         ("*Messages*")
         ("*Occur*")
+        ("*Completions*")
         ))
 (global-set-key (kbd "C-c q") popwin:keymap)
 
@@ -483,7 +488,7 @@
 
 
 (use-package ace-jump-mode
-  :bind ("C-c SPC" . ace-jump-mode))
+  :bind ("C-c C-SPC" . ace-jump-mode))
 
 
 ;; CODING HOOK
@@ -499,3 +504,22 @@
 (add-hook 'clojure-mode-hook    'my-coding-mode-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-coding-mode-hook)
 (add-hook 'sh-mode-hook         'my-coding-mode-hook)
+(add-hook 'ruby-mode-hook       'my-coding-mode-hook)
+
+
+;; mark-multiple
+(require 'inline-string-rectangle)
+(global-set-key (kbd "C-x r t") 'inline-string-rectangle)
+
+
+(require 'mark-more-like-this)
+;; (global-set-key (kbd "C-<") 'mark-previous-like-this)
+;; (global-set-key (kbd "C->") 'mark-next-like-this)
+;; (global-set-key (kbd "C-*") 'mark-all-like-this)
+(global-set-key (kbd "C-x M-m") 'mark-more-like-this)
+;; ^^ like the other two, but takes an argument (negative is previous)
+
+
+;; sessions
+(load "~/.emacs.d/sessions.el")
+
