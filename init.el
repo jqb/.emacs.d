@@ -9,6 +9,7 @@
       (load "~/.emacs.d/console-emacs-only.el")))
 (if window-system (load "~/.emacs.d/xemacs-only.el"))
 
+
 ;; extend the path on windows
 (if (eq system-type 'windows-nt)
     (setenv "PATH"
@@ -35,6 +36,16 @@
 (require 'bind-key)
 (require 'use-package)
 ;;;;;;;
+
+
+;; mmm & mako mode
+(require 'mmm-auto)
+(setq mmm-global-mode 'maybe)
+
+(load "mmm-mako.el")
+(add-to-list 'auto-mode-alist '("\\.mak\\'" . html-mode))
+(mmm-add-mode-ext-class 'html-mode "\\.mak\\'" 'mako)
+;;
 
 
 (use-package
