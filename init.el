@@ -244,6 +244,10 @@
 (global-set-key (kbd "C-x g") 'magit-status)
 
 
+(require 'monky)
+(setq monky-process-type 'cmdserver)
+
+
 (use-package
  php-mode
  :defer t
@@ -386,7 +390,10 @@
 
 (use-package
  less-mode
- :mode ("\\.less\\'" . less-mode)
+ :mode (
+   ("\\.less\\'" . less-mode)
+   ("\\.scss\\'" . less-mode)  ;; just workaround for a while
+ )
  :config
  (progn
    (defun my-less-mode-hook ()
