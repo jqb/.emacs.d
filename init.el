@@ -32,6 +32,8 @@
 (add-to-list 'load-path "~/.emacs.d/plugins/")
 (add-to-list 'load-path "~/.emacs.d/plugins/mark-multiple/")
 (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet-0.6.1c")
+(add-to-list 'load-path "~/.emacs.d/plugins/js2-mode/")
+
 
 (require 'bind-key)
 (require 'use-package)
@@ -402,7 +404,12 @@
    ))
 
 
-;; javascript mode
+;; javascript mode (js2-mode)
+(require 'js2-mode)
+
+(autoload 'js2-mode "js2-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+
 (defun my-js-mode-hook ()
   (setq tab-width 4)
   (setq js-indent-level 4)
