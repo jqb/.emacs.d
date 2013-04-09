@@ -33,6 +33,7 @@
 (add-to-list 'load-path "~/.emacs.d/plugins/mark-multiple/")
 (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet-0.6.1c")
 (add-to-list 'load-path "~/.emacs.d/plugins/js2-mode/")
+(add-to-list 'load-path "~/.emacs.d/plugins/monky/")
 
 
 (require 'bind-key)
@@ -166,6 +167,7 @@
         ("*Messages*")
         ("*Occur*")
         ("*Completions*")
+        ("*Ibuffer*")
         ))
 (global-set-key (kbd "C-c q") popwin:keymap)
 
@@ -248,6 +250,8 @@
 
 (require 'monky)
 (setq monky-process-type 'cmdserver)
+(global-set-key (kbd "C-x C-g h") 'monky-status)
+
 
 
 (use-package
@@ -530,6 +534,8 @@
 (add-hook 'emacs-lisp-mode-hook 'my-coding-mode-hook)
 (add-hook 'sh-mode-hook         'my-coding-mode-hook)
 (add-hook 'ruby-mode-hook       'my-coding-mode-hook)
+(add-hook 'js-mode-hook         'my-coding-mode-hook)
+(add-hook 'js2-mode-hook        'my-coding-mode-hook)
 
 
 ;; mark-multiple
