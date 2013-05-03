@@ -177,24 +177,26 @@
  :mode (("\\.py" . python-mode))
  )
 
-;; python-mode
-;; (defadvice python-calculate-indentation (around outdent-closing-brackets)
-;;   "Handle lines beginning with a closing bracket and indent them so that
-;; they line up with the line containing the corresponding opening bracket."
-;;   (save-excursion
-;;     (beginning-of-line)
-;;     (let ((syntax (syntax-ppss)))
-;;       (if (and (not (eq 'string (syntax-ppss-context syntax)))
-;;                (python-continuation-line-p)
-;;                (cadr syntax)
-;;                (skip-syntax-forward "-")
-;;                (looking-at "\\s)"))
-;;           (progn
-;;             (forward-char 1)
-;;             (ignore-errors (backward-sexp))
-;;             (setq ad-return-value (current-indentation)))
-;;         ad-do-it))))
-;; (ad-activate 'python-calculate-indentation)
+
+(when (not (boundp 'tramp-list-remote-buffers))
+  (defun tramp-list-remote-buffers ()
+    ()
+    ))
+
+
+(when (load "flymake" t)
+  (defun flymake-pyflakes-init ()
+     ; Make sure it's not a remote buffer or flymake would not work
+     (when (not (subsetp (list (current-buffer)) (tramp-list-remote-buffers)))
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                         'flymake-create-temp-inplace))
+             (local-file (file-relative-name
+                          temp-file
+                          (file-name-directory buffer-file-name))))
+        (list "pyflakes" (list temp-file)))))
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.py\\'" flymake-pyflakes-init)))
+
 
 (use-package
  projectile
@@ -210,13 +212,14 @@
 (use-package ack)
 
 
-(use-package
- tramp
- :defer t
- :config
- (progn
-   (setq tramp-default-method "ssh")
-   ))
+;; (use-package
+;;  tramp
+;;  :defer t
+;;  :config
+;;  (progn
+;;    (setq tramp-default-method "ssh")
+;;    ))
+(setq tramp-mode nil)
 
 
 (use-package
@@ -525,6 +528,7 @@
   (hl-line-mode 1)
   (linum-mode 1)
   (highlight-symbol-mode)
+  (flymake-mode 1)
   )
 (add-hook 'python-mode-hook     'my-coding-mode-hook)
 (add-hook 'java-mode-hook       'my-coding-mode-hook)
