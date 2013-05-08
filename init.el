@@ -41,14 +41,16 @@
 ;;;;;;;
 
 
-;; mmm & mako mode
-(require 'mmm-auto)
-(setq mmm-global-mode 'maybe)
+(require 'cl-lib)
 
-(load "mmm-mako.el")
+
+;; mmm & mako mode
+;; (require 'mmm-auto)
+;; (setq mmm-global-mode 'maybe)
+
+;; (load "mmm-mako.el")
+;; (mmm-add-mode-ext-class 'html-mode "\\.mak\\'" 'mako)
 (add-to-list 'auto-mode-alist '("\\.mak\\'" . html-mode))
-(mmm-add-mode-ext-class 'html-mode "\\.mak\\'" 'mako)
-;;
 
 
 (use-package
@@ -122,7 +124,7 @@
 (setq dabbrev-case-replace t)
 
 ;; linum mode
-(global-linum-mode -1)  ;; I'm turning it on only for code edition see below
+;; (global-linum-mode -1)  ;; I'm turning it on only for code edition see below
 (setq linum-format "%d ")
 
 
@@ -254,7 +256,6 @@
 (require 'monky)
 (setq monky-process-type 'cmdserver)
 (global-set-key (kbd "C-x C-g h") 'monky-status)
-
 
 
 (use-package
@@ -543,18 +544,18 @@
 
 
 ;; mark-multiple
-(require 'inline-string-rectangle)
-(global-set-key (kbd "C-x r t") 'inline-string-rectangle)
+;; (require 'inline-string-rectangle)
+;; (global-set-key (kbd "C-x r t") 'inline-string-rectangle)
 
 
-(require 'mark-more-like-this)
+;; (require 'mark-more-like-this)
+;; (global-set-key (kbd "C-x M-m") 'mark-more-like-this)
 ;; (global-set-key (kbd "C-<") 'mark-previous-like-this)
 ;; (global-set-key (kbd "C->") 'mark-next-like-this)
 ;; (global-set-key (kbd "C-*") 'mark-all-like-this)
-(global-set-key (kbd "C-x M-m") 'mark-more-like-this)
-;; ^^ like the other two, but takes an argument (negative is previous)
+;; ^^ like the other two, but takes an argument (negtive is previous)
 
 
 ;; sessions
-(load "~/.emacs.d/sessions.el")
+;; (load "~/.emacs.d/sessions.el")
 
