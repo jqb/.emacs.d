@@ -316,11 +316,11 @@
 ;;    (yas/initialize))
 ;;  )
 
-
 (use-package
  ido
  :commands
  (recentf-list
+  recentf-load-list
   ido-find-file
   ido-goto-bookmark
   ido-goto-symbol
@@ -331,9 +331,6 @@
    (bind-key "C-x f" 'recentf-ido-find-file))
  :config
  (progn
-   (use-package recentf
-    :init (progn (recentf-mode 1)))
-
    (ido-mode t)
 
    (setq ido-enable-flex-matching t)
