@@ -1,0 +1,6 @@
+# contributor: Kuba Janoszek <kuba.janoszek@gmail.com>
+# name: here
+# --
+def here(*path):
+    absolute_here = os.path.abspath(os.path.dirname(__file__))
+    return os.path.abspath(os.path.join(absolute_here, *path))
