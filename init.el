@@ -84,7 +84,7 @@
    (bind-key "C-c <up>" 'windmove-up)
    (bind-key "C-c <down>" 'windmove-down)
 
-   (bind-key "C-x f" 'recentf-ido-find-file)
+   ;; (bind-key "C-x f" 'recentf-ido-find-file)
    ))
 (load "~/.emacs.d/keys.el")
 
@@ -200,13 +200,6 @@
                '("\\.py\\'" flymake-pyflakes-init)))
 
 
-(use-package
- projectile
- :init
- (progn
-   (projectile-global-mode)))
-
-
 (use-package smooth-scrolling)
 (use-package coffee-mode)
 (use-package clojure-mode)
@@ -254,6 +247,11 @@
 
 
 (require 'monky)
+(eval-after-load 'monky ;; change monky diff colors
+  '(progn
+     (set-face-foreground 'monky-diff-add "green3")
+     (set-face-foreground 'monky-diff-del "red3")
+     ))
 (setq monky-process-type 'cmdserver)
 (global-set-key (kbd "C-x C-g h") 'monky-status)
 
@@ -316,15 +314,20 @@
 ;;    (yas/initialize))
 ;;  )
 
+(require 'recentf)
+(recentf-mode 1)
+
+
 (use-package
  ido
  :commands
  (recentf-list
   recentf-load-list
+  recentf-ido-find-file
+  recentf-open-files
   ido-find-file
   ido-goto-bookmark
-  ido-goto-symbol
-  recentf-ido-find-file)
+  ido-goto-symbol)
  :init
  (progn
    (bind-key "M-i" 'ido-goto-symbol)
@@ -487,16 +490,20 @@
 
 
 ;; ELPA
-;; (when
-;;     (load
-;;      (expand-file-name "~/.emacs.d/elpa/package.el"))
-;;   (package-initialize))
+(when
+    (load (expand-file-name "~/.emacs.d/elpa/package.el"))
+  (progn
+    (add-to-list 'package-archives
+                 '("gnu" . "http://elpa.gnu.org/packages/") t)
+    (add-to-list 'package-archives
+                 '("marmalade" . "http://marmalade-repo.org/packages/") t)
+    (add-to-list 'package-archives
+                 '("melpa" . "http://melpa.milkbox.net/packages/") t)
+    (package-initialize)
+    ))
 
-;; (add-to-list 'package-archives
-;;              '("marmalade" . "http://marmalade-repo.org/packages/") t)
-
-;; (when (not package-archive-contents)
-;;   (package-refresh-contents))
+(when (not package-archive-contents)
+  (package-refresh-contents))
 
 
 ;; cycle through buffers
@@ -528,7 +535,6 @@
   (highlight-symbol-mode)
   (flymake-mode 1)
   )
-(add-hook 'python-mode-hook     'my-coding-mode-hook)
 (add-hook 'java-mode-hook       'my-coding-mode-hook)
 (add-hook 'c-mode-hook          'my-coding-mode-hook)
 (add-hook 'c++-mode-hook        'my-coding-mode-hook)
@@ -538,6 +544,20 @@
 (add-hook 'ruby-mode-hook       'my-coding-mode-hook)
 (add-hook 'js-mode-hook         'my-coding-mode-hook)
 (add-hook 'js2-mode-hook        'my-coding-mode-hook)
+
+
+(defun my-python-mode-hook()
+  (my-coding-mode-hook)
+  (modify-syntax-entry ?_ "_" python-mode-syntax-table)
+)
+(add-hook 'python-mode-hook 'my-python-mode-hook)
+
+
+(defun my-html-coding-hook()
+  (my-coding-mode-hook)
+  (setq sgml-basic-offset 4)
+  )
+(add-hook 'html-mode-hook 'my-html-coding-hook)
 
 
 ;; mark-multiple
@@ -556,3 +576,36 @@
 ;; sessions
 ;; (load "~/.emacs.d/sessions.el")
 
+
+(require 'projectile-autoloads)
+(projectile-global-mode)
+
+
+;; compile on demand
+(defun -compile-command(subcommands-to-run)
+  (concat "~/bin/compile"
+          subcommands-to-run
+          (projectile-project-root)
+          " "
+          (buffer-file-name)
+          " "
+          "\"" (what-cursor-position) "\""
+          ))
+
+
+(defun compile-current-all()
+  (interactive)
+  (compilation-start (-compile-command " pep8,nosetests-project ")))
+(global-set-key (kbd "C-c c a") 'compile-current-all)
+
+
+(defun compile-current-pep8()
+  (interactive)
+  (compilation-start (-compile-command " pep8 ")))
+(global-set-key (kbd "C-c c p") 'compile-current-pep8)
+
+
+(defun compile-current-nosetests()
+  (interactive)
+  (compilation-start (-compile-command " nosetests ")))
+(global-set-key (kbd "C-c c t") 'compile-current-nosetests)

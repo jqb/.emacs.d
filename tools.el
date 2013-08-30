@@ -60,9 +60,18 @@
 (setq ibuffer-saved-filter-groups
      (quote (("default"
               ("python" (mode . python-mode))
+              ("js" (or
+                     (mode . js-mode)
+                     (mode . js2-mode)
+                     ))
+              ("scss" (or
+                       (mode . css-mode)
+                       (mode . less-mode)
+                     ))
               ("html" (or
 		       (mode . html-mode)
-		       (mode . django-mode)))
+		       (mode . django-mode)
+                       ))
               ("dired"  (mode . dired-mode))
               ("planner" (or
                           (name . "^\\*Calendar\\*$")
