@@ -148,6 +148,7 @@
 (eval-after-load "dired-aux"
   '(add-to-list 'dired-compress-file-suffixes
 		'("\\.zip\\'" ".zip" "unzip")))
+(setq dired-dwim-target t)
 
 
 ;; devils's pie mode
@@ -170,6 +171,7 @@
         ("*Occur*")
         ("*Completions*")
         ("*Ibuffer*")
+        ("*image-dired*")
         ))
 (global-set-key (kbd "C-c q") popwin:keymap)
 
@@ -287,6 +289,7 @@
  :commands (text-translator text-translator-translate-last-string)
  :init
  (progn
+   (setq text-translator-display-popup t)
    (setq text-translator-default-engine "google.com_enpl")
    (bind-key "C-x M-t" 'text-translator)
    (bind-key "C-x M-T" 'text-translator-translate-last-string)
@@ -579,6 +582,9 @@
 
 (require 'projectile-autoloads)
 (projectile-global-mode)
+
+
+(require 'popup)
 
 
 ;; compile on demand
