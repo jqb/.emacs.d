@@ -18,7 +18,9 @@
 
 ;; mac
 (if (eq system-type 'darwin)
-    (setenv "PATH" (concat "/usr/local/bin" ":" (getenv "PATH")) ))
+    (setenv "PATH"
+            (concat "/usr/local/bin" ":" (getenv "PATH"))
+            ))
 
 
 ;; MAC needs this
@@ -28,7 +30,7 @@
 ;;;;;;;
 (add-to-list 'load-path "~/.emacs.d/")
 (add-to-list 'load-path "~/.emacs.d/elpa/")
-(add-to-list 'load-path "~/.emacs.d/magit/")
+;; (add-to-list 'load-path "~/.emacs.d/magit/")
 (add-to-list 'load-path "~/.emacs.d/plugins/")
 (add-to-list 'load-path "~/.emacs.d/plugins/mark-multiple/")
 (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet-0.6.1c")
@@ -103,8 +105,6 @@
 
 (show-paren-mode 1)
 (menu-bar-mode -1)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
 (delete-selection-mode 1) ; delete seleted text when typing
 (global-hl-line-mode -1)
 
@@ -235,7 +235,7 @@
 (global-set-key (kbd "C-2") 'highlight-symbol-prev)
 
 
-(require 'magit)
+;; (require 'magit)
 (eval-after-load 'magit ;; change magit diff colors
   '(progn
      (set-face-foreground 'magit-diff-add "green3")
@@ -246,14 +246,14 @@
 (global-set-key (kbd "C-x g") 'magit-status)
 
 
-(require 'monky)
-(eval-after-load 'monky ;; change monky diff colors
-  '(progn
-     (set-face-foreground 'monky-diff-add "green3")
-     (set-face-foreground 'monky-diff-del "red3")
-     ))
-(setq monky-process-type 'cmdserver)
-(global-set-key (kbd "C-x C-g h") 'monky-status)
+;; (require 'monky)
+;; (eval-after-load 'monky ;; change monky diff colors
+;;   '(progn
+;;      (set-face-foreground 'monky-diff-add "green3")
+;;      (set-face-foreground 'monky-diff-del "red3")
+;;      ))
+;; (setq monky-process-type 'cmdserver)
+;; (global-set-key (kbd "C-x C-g h") 'monky-status)
 
 
 (use-package
@@ -490,17 +490,28 @@
 
 
 ;; ELPA
-(when
-    (load (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (progn
-    (add-to-list 'package-archives
-                 '("gnu" . "http://elpa.gnu.org/packages/") t)
-    (add-to-list 'package-archives
-                 '("marmalade" . "http://marmalade-repo.org/packages/") t)
-    (add-to-list 'package-archives
-                 '("melpa" . "http://melpa.milkbox.net/packages/") t)
-    (package-initialize)
-    ))
+(require 'package)
+(add-to-list 'package-archives
+             '("gnu" . "http://elpa.gnu.org/packages/") t)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
+
+
+;; (when
+;;     (load (expand-file-name "~/.emacs.d/elpa/package.el"))
+;;   (progn
+;;     (add-to-list 'package-archives
+;;                  '("gnu" . "http://elpa.gnu.org/packages/") t)
+;;     (add-to-list 'package-archives
+;;                  '("marmalade" . "http://marmalade-repo.org/packages/") t)
+;;     (add-to-list 'package-archives
+;;                  '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;;     (package-initialize)
+;;     ))
+
 
 (when (not package-archive-contents)
   (package-refresh-contents))
@@ -576,8 +587,8 @@
 ;; sessions
 ;; (load "~/.emacs.d/sessions.el")
 
-
-(require 'projectile-autoloads)
+(require 'projectile)
+;; (require 'projectile-autoloads)
 (projectile-global-mode)
 
 
