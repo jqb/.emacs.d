@@ -18,9 +18,12 @@
 
 ;; mac
 (if (eq system-type 'darwin)
-    (setenv "PATH"
-            (concat "/usr/local/bin" ":" (getenv "PATH"))
-            ))
+    (progn
+      (setenv "PATH" (concat
+                      "/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:" (getenv "PATH")))
+      (setq exec-path (cons "/usr/local/bin" exec-path))
+      )
+  )
 
 
 ;; MAC needs this
@@ -391,7 +394,11 @@
  :config
  (progn
    (defun my-django-mode-hook ()
-     (setq tab-width 2))
+     (setq tab-width 4)
+     (lambda()
+       (setq sgml-basic-offset 4)
+       (setq indent-tabs-mode t))
+     )
    (add-to-list 'django-mode-hook 'my-django-mode-hook)
    ))
 
