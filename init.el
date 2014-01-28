@@ -434,9 +434,10 @@
 (defun my-js-mode-hook ()
   (setq tab-width 4)
   (setq js-indent-level 4)
-  (setq indent-tab-mode nil)
+  (setq indent-tabs-mode t)
   )
 (add-hook 'js-mode-hook 'my-js-mode-hook)
+(add-hook 'js2-mode-hook 'my-js-mode-hook)
 
 
 ;; js docs - DOES NOT WORK
