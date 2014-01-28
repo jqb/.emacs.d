@@ -1,0 +1,1 @@
+from hvad.admin import TranslatableModelAdmin, TranslatableInline
