@@ -41,7 +41,7 @@
   (progn
     (add-hook 'window-setup-hook 'toggle-frame-fullscreen)
     (custom-set-faces
-     '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 110 :width normal :foundry "unknown" :family "Courier"))))
+     '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 115 :width normal :foundry "unknown" :family "Courier"))))
      '(cursor ((t (:background "white")))))
   )
 )
