@@ -24,6 +24,15 @@
 (setq mac-command-modifier 'meta)
 
 
+;; Dropbox path
+;;
+;; - by default: ~/Dropbox/emacs/private.el
+(setq dropbox-path "~/Dropbox/")
+;; - on windows:
+(if (fboundp 'w32-send-sys-command)
+    (setq dropbox-path "C:/Users/kuba/Dropbox/"))
+
+
 ;;;;;;;
 ;; Emacs 25.5 on windows is complaining that mail .emacs.d is on the
 ;; load-path, so - commenting out
