@@ -528,10 +528,6 @@
 ;;     ))
 
 
-(when (not package-archive-contents)
-  (package-refresh-contents))
-
-
 ;; cycle through buffers
 ;; (global-set-key (kbd "<C-tab>") 'bury-buffer)
 
@@ -642,3 +638,14 @@
 
 (require 'perspective)
 (persp-mode)
+
+
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
+
+(add-hook 'dired-toggle-mode-hook
+          (lambda () (interactive)
+            (visual-line-mode 1)
+            (setq-local visual-line-fringe-indicators '(nil right-curly-arrow))
+            (setq-local word-wrap nil)))
