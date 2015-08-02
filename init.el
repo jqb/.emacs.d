@@ -25,7 +25,10 @@
 
 
 ;;;;;;;
-(add-to-list 'load-path "~/.emacs.d/")
+;; Emacs 25.5 on windows is complaining that mail .emacs.d is on the
+;; load-path, so - commenting out
+;;
+;; (add-to-list 'load-path "~/.emacs.d/")
 (add-to-list 'load-path "~/.emacs.d/elpa/")
 ;; (add-to-list 'load-path "~/.emacs.d/magit/")
 (add-to-list 'load-path "~/.emacs.d/plugins/")
