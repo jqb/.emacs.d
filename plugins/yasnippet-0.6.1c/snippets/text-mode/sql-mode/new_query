@@ -1,0 +1,13 @@
+select
+  *
+     from $1 as t
+     $0
+
+    where true
+--      and
+
+-- group by
+--   having true
+
+-- order by
+;
