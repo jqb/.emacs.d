@@ -2,22 +2,6 @@
 (tool-bar-mode -1)
 
 
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; for xemacs:
-(custom-set-variables
- '(column-number-mode t)
- '(inhibit-startup-echo-area-message nil)
- '(inhibit-startup-screen t)
- '(show-paren-mode t)
- '(tool-bar-mode nil)
- '(tooltip-mode nil))
-(custom-set-faces
- '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :foundry "unknown" :family "Ubuntu Mono"))))
- '(cursor ((t (:background "white"))))
- '(mmm-default-submode-face ((t (:background "gray10")))))
-(add-to-list 'default-frame-alist '(alpha 90 90))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; end of xemacs settings
-
-
 ;; FOR WINDOWS
 ;; trick for full screen on windows
 (if (fboundp 'w32-send-sys-command)
@@ -41,7 +25,7 @@
   (progn
     (add-hook 'window-setup-hook 'toggle-frame-fullscreen)
     (custom-set-faces
-     '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 115 :width normal :foundry "unknown" :family "Courier"))))
+     '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "unknown" :family "Courier New"))))
      '(cursor ((t (:background "white")))))
   )
 )

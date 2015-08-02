@@ -4,12 +4,6 @@
   (message "Loading %s..." load-file-name))
 
 
-(unless window-system
-  (if (not (eq system-type 'windows-nt))
-      (load "~/.emacs.d/console-emacs-only.el")))
-(if window-system (load "~/.emacs.d/xemacs-only.el"))
-
-
 ;; extend the path on windows
 (if (eq system-type 'windows-nt)
     (setenv "PATH"
@@ -39,6 +33,7 @@
 (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet-0.6.1c")
 (add-to-list 'load-path "~/.emacs.d/plugins/js2-mode/")
 (add-to-list 'load-path "~/.emacs.d/plugins/monky/")
+(add-to-list 'load-path "~/.emacs.d/plugins/evernote-mode/")
 
 
 (require 'bind-key)
@@ -649,3 +644,19 @@
             (visual-line-mode 1)
             (setq-local visual-line-fringe-indicators '(nil right-curly-arrow))
             (setq-local word-wrap nil)))
+
+
+;; (require 'evernote-mode)
+
+
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file 'noerror)
+
+
+(unless window-system
+  (if (not (eq system-type 'windows-nt))
+      (load "~/.emacs.d/console-emacs-only.el")))
+(if window-system (load "~/.emacs.d/xemacs-only.el"))
+
+
+(load "~/Dropbox/emacs/private.el")
