@@ -152,6 +152,7 @@
   '(add-to-list 'dired-compress-file-suffixes
 		'("\\.zip\\'" ".zip" "unzip")))
 (setq dired-dwim-target t)
+(setq wdired-allow-to-change-permissions t)
 
 
 ;; devils's pie mode
