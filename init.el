@@ -671,4 +671,4 @@
 (if window-system (load "~/.emacs.d/xemacs-only.el"))
 
 
-(load "~/Dropbox/emacs/private.el")
+(load (format "%s%s" dropbox-path "emacs/private.el"))
