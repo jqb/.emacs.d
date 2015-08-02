@@ -251,14 +251,17 @@
 (global-set-key (kbd "C-2") 'highlight-symbol-prev)
 
 
+;; NOTE: looks like new Magit doesn't need / use that (and looks ok
+;; anyway) - leaving for now, just to remember
+;;
 ;; (require 'magit)
-(eval-after-load 'magit ;; change magit diff colors
-  '(progn
-     (set-face-foreground 'magit-diff-add "green3")
-     (set-face-foreground 'magit-diff-del "red3")
-     (set-face-background 'magit-item-highlight "#2e3436")
-     (when (not window-system)
-       (set-face-background 'magit-item-highlight "gray13"))))
+;; (eval-after-load 'magit ;; change magit diff colors
+;;   '(progn
+;;      (set-face-foreground 'magit-diff-add "green3")
+;;      (set-face-foreground 'magit-diff-del "red3")
+;;      (set-face-background 'magit-item-highlight "#2e3436")
+;;      (when (not window-system)
+;;        (set-face-background 'magit-item-highlight "gray13"))))
 (global-set-key (kbd "C-x g") 'magit-status)
 
 
