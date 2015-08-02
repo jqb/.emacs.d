@@ -637,3 +637,7 @@
   (interactive)
   (compilation-start (-compile-command " nosetests ")))
 (global-set-key (kbd "C-c c t") 'compile-current-nosetests)
+
+
+(require 'perspective)
+(persp-mode)
