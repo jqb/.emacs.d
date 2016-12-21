@@ -14,10 +14,22 @@
 (if (eq system-type 'darwin)
     (progn
       (setenv "PATH" (concat
-                      "/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:" (getenv "PATH")))
+                      (expand-file-name "~/tools/bin") ":/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:" (getenv "PATH")))
       (setq exec-path (cons "/usr/local/bin" exec-path))
+      (setq shell-file-name "bash")
+      (setq shell-command-switch "-ic")
       )
   )
+
+
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file 'noerror)
+
+
+(unless window-system
+  (if (not (eq system-type 'windows-nt))
+      (load "~/.emacs.d/console-emacs-only.el")))
+(if window-system (load "~/.emacs.d/xemacs-only.el"))
 
 
 ;; MAC needs this
@@ -98,7 +110,6 @@
 
    ;; (bind-key "C-x f" 'recentf-ido-find-file)
    ))
-(load "~/.emacs.d/keys.el")
 
 ;; (require 'sunrise-commander)
 ;; (require 'sunrise-x-tree)
@@ -187,12 +198,6 @@
 (global-set-key (kbd "C-c q") popwin:keymap)
 
 
-(use-package
- python-mode
- :mode (("\\.py" . python-mode))
- )
-
-
 (when (not (boundp 'tramp-list-remote-buffers))
   (defun tramp-list-remote-buffers ()
     ()
@@ -221,6 +226,13 @@
 (use-package clojure-mode)
 (use-package hl-tags-mode)
 (use-package ack)
+(use-package python-mode
+  :mode (("\\.py" . python-mode))
+  :config
+  (progn
+    (setq python-indent-guess-indent-offset nil)
+    (setq python-indent-offset 4)
+    ))
 
 
 ;; (use-package
@@ -282,12 +294,43 @@
  )
 
 
-;; java mode
+(defun my-coding-mode-hook()
+  (hl-line-mode 1)
+  (linum-mode 1)
+  (highlight-symbol-mode)
+  (flymake-mode 1)
+  )
+
+(add-hook 'c-mode-hook          'my-coding-mode-hook)
+(add-hook 'c++-mode-hook        'my-coding-mode-hook)
+(add-hook 'clojure-mode-hook    'my-coding-mode-hook)
+(add-hook 'emacs-lisp-mode-hook 'my-coding-mode-hook)
+(add-hook 'sh-mode-hook         'my-coding-mode-hook)
+(add-hook 'ruby-mode-hook       'my-coding-mode-hook)
+(add-hook 'js-mode-hook         'my-coding-mode-hook)
+(add-hook 'js2-mode-hook        'my-coding-mode-hook)
+
+
 (defun my-java-mode-hook ()
   (c-set-offset 'arglist-intro 4)
   (c-set-offset 'arglist-close 0)
-  (setq tab-width 4))
+  (setq tab-width 4)
+  (my-coding-mode-hook))
 (add-hook 'java-mode-hook 'my-java-mode-hook)
+
+
+(defun my-html-coding-hook()
+  (my-coding-mode-hook)
+  (setq sgml-basic-offset 4)
+  )
+(add-hook 'html-mode-hook 'my-html-coding-hook)
+
+
+(defun my-python-mode-hook()
+  (my-coding-mode-hook)
+  (modify-syntax-entry ?_ "_" python-mode-syntax-table)
+)
+(add-hook 'python-mode-hook 'my-python-mode-hook)
 
 
 ;; Org mode
@@ -560,38 +603,6 @@
   :bind ("C-c C-SPC" . ace-jump-mode))
 
 
-;; CODING HOOK
-(defun my-coding-mode-hook()
-  (hl-line-mode 1)
-  (linum-mode 1)
-  (highlight-symbol-mode)
-  (flymake-mode 1)
-  )
-(add-hook 'java-mode-hook       'my-coding-mode-hook)
-(add-hook 'c-mode-hook          'my-coding-mode-hook)
-(add-hook 'c++-mode-hook        'my-coding-mode-hook)
-(add-hook 'clojure-mode-hook    'my-coding-mode-hook)
-(add-hook 'emacs-lisp-mode-hook 'my-coding-mode-hook)
-(add-hook 'sh-mode-hook         'my-coding-mode-hook)
-(add-hook 'ruby-mode-hook       'my-coding-mode-hook)
-(add-hook 'js-mode-hook         'my-coding-mode-hook)
-(add-hook 'js2-mode-hook        'my-coding-mode-hook)
-
-
-(defun my-python-mode-hook()
-  (my-coding-mode-hook)
-  (modify-syntax-entry ?_ "_" python-mode-syntax-table)
-)
-(add-hook 'python-mode-hook 'my-python-mode-hook)
-
-
-(defun my-html-coding-hook()
-  (my-coding-mode-hook)
-  (setq sgml-basic-offset 4)
-  )
-(add-hook 'html-mode-hook 'my-html-coding-hook)
-
-
 ;; mark-multiple
 ;; (require 'inline-string-rectangle)
 ;; (global-set-key (kbd "C-x r t") 'inline-string-rectangle)
@@ -608,7 +619,7 @@
 ;; sessions
 ;; (load "~/.emacs.d/sessions.el")
 
-(require 'projectile)
+;; (require 'projectile)
 ;; (require 'projectile-autoloads)
 (projectile-global-mode)
 
@@ -664,14 +675,5 @@
 ;; (require 'evernote-mode)
 
 
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
-
-
-(unless window-system
-  (if (not (eq system-type 'windows-nt))
-      (load "~/.emacs.d/console-emacs-only.el")))
-(if window-system (load "~/.emacs.d/xemacs-only.el"))
-
-
+(load "~/.emacs.d/keys.el")
 (load (format "%s%s" dropbox-path "emacs/private.el"))

@@ -2,9 +2,11 @@
 (global-set-key [f12] 'menu-bar-mode)
 
 (global-set-key (kbd "C-c n") 'delete-trailing-whitespace)
-(global-set-key (kbd "C-x p") (lambda ()
-                                (interactive)
-                                (other-window -1))) ;; back one
+
+;; (global-set-key "\C-cl" 'org-store-link)
+;; (global-set-key "\C-ca" 'org-agenda)
+;; (global-set-key "\C-cc" 'org-capture)
+;; (global-set-key "\C-cb" 'org-iswitchb)
 
 ;; ibuffer by default
 (global-set-key (kbd "C-x C-b") 'ibuffer)
@@ -63,3 +65,7 @@
 
 (global-set-key (kbd "C-{") (kbd "C-u - 1 0 S-M-<up>"))
 (global-set-key (kbd "C-:") (kbd "C-u - 1 0 S-M-<down>"))
+
+(global-set-key (kbd "C-c p") (lambda ()
+                                (interactive)
+                                (other-window -1))) ;; back one

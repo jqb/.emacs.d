@@ -7,7 +7,9 @@
  '(column-number-mode t)
  '(inhibit-startup-echo-area-message nil)
  '(inhibit-startup-screen t)
- '(package-selected-packages (quote (magit popup)))
+ '(package-selected-packages
+   (quote
+    (ox-gfm markdown-preview-eww markdown-preview-mode markdown-mode+ graphviz-dot-mode python-mode erlang nginx-mode markdown-mode yaml-mode magit-gh-pulls magit dockerfile-mode ag bookmark+ projectile popup)))
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(tooltip-mode nil))
@@ -41,7 +43,7 @@
   (progn
     (add-hook 'window-setup-hook 'toggle-frame-fullscreen)
     (custom-set-faces
-     '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "unknown" :family "Courier New"))))
+     '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 190 :width normal :foundry "unknown" :family "Courier New"))))
      '(cursor ((t (:background "white")))))
   )
 )
