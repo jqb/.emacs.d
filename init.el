@@ -676,4 +676,5 @@
 
 
 (load "~/.emacs.d/keys.el")
-(load (format "%s%s" dropbox-path "emacs/private.el"))
+(when (format "%s%s" dropbox-path "emacs/private.el")
+  (load (format "%s%s" dropbox-path "emacs/private.el")))
