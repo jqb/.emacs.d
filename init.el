@@ -6,8 +6,12 @@
 
 ;; extend the path on windows
 (if (eq system-type 'windows-nt)
-    (setenv "PATH"
-	    (concat "C:/Program Files (x86)/Git/bin" ";" (getenv "PATH")) ))
+    (progn
+      (setenv "PATH"
+              (concat "C:/Program Files (x86)/Git/bin" ";" (getenv "PATH")) )
+      (setq visible-bell 1)
+      )
+  )
 
 
 ;; mac
@@ -678,6 +682,3 @@
 (load "~/.emacs.d/keys.el")
 (when (file-exists-p (format "%s%s" dropbox-path "emacs/private.el"))
   (load (format "%s%s" dropbox-path "emacs/private.el")))
-
-
-(setq visible-bell 1)
