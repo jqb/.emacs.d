@@ -131,7 +131,13 @@
 (show-paren-mode 1)
 (menu-bar-mode -1)
 (delete-selection-mode 1) ; delete seleted text when typing
+
+
+;; Less irritating current line highlighting
 (global-hl-line-mode -1)
+(set-face-background 'highlight "#222")
+(set-face-foreground 'highlight nil)
+
 
 (fset 'yes-or-no-p 'y-or-n-p)
 (put 'upcase-region 'disabled nil)
@@ -360,27 +366,6 @@
    ))
 
 
-(require 'dropdown-list)
-(require 'yasnippet)
-(yas/load-directory "~/.emacs.d/plugins/yasnippet-0.6.1c/snippets")
-(yas/initialize)
-
-;; XXX: This does not work
-;; (use-package
-;;  yasnippet
-;;  :if (not noninteractive)
-;;  :diminish yas/minor-mode
-;;  :commands (yas/minor-mode yas/expand)
-;;  :init
-;;  (progn
-;;    (bind-key "TAB" 'yas/expand))
-;;  :config
-;;  (progn
-;;    (use-package dropdown-list)
-;;    (yas/load-directory "~/.emacs.d/plugins/yasnippet-0.6.1c/snippets")
-;;    (yas/initialize))
-;;  )
-
 (require 'recentf)
 (recentf-mode 1)
 
@@ -569,20 +554,27 @@
              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives
+             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
 (package-initialize)
 
 
-;; (when
-;;     (load (expand-file-name "~/.emacs.d/elpa/package.el"))
-;;   (progn
-;;     (add-to-list 'package-archives
-;;                  '("gnu" . "http://elpa.gnu.org/packages/") t)
-;;     (add-to-list 'package-archives
-;;                  '("marmalade" . "http://marmalade-repo.org/packages/") t)
-;;     (add-to-list 'package-archives
-;;                  '("melpa" . "http://melpa.milkbox.net/packages/") t)
-;;     (package-initialize)
-;;     ))
+
+;; (require 'dropdown-list)  ;; <= previously needed by yasnippet in "plugins"
+(require 'yasnippet)
+(setq yas-snippet-dirs
+      '(;; "~/.emacs.d/snippets" ;personal snippets
+        "~/.emacs.d/plugins/yasnippet-0.6.1c/snippets" ;my old snippets
+        "~/.emacs.d/elpa/yasnippet-20170723.418/snippets" ;default
+        ))
+(yas/load-directory "~/.emacs.d/plugins/yasnippet-0.6.1c/snippets")
+(yas/initialize)
+
+
+;; For "elpy" :: pip install rope jedi importmagic autopep8 flake8
+(setq python-shell-interpreter "python3")
+(setq python-shell-completion-native-enable nil)
+(elpy-enable)
 
 
 ;; cycle through buffers
@@ -632,33 +624,33 @@
 
 
 ;; compile on demand
-(defun -compile-command(subcommands-to-run)
-  (concat "~/bin/compile"
-          subcommands-to-run
-          (projectile-project-root)
-          " "
-          (buffer-file-name)
-          " "
-          "\"" (what-cursor-position) "\""
-          ))
+;; (defun -compile-command(subcommands-to-run)
+;;   (concat "~/bin/compile"
+;;           subcommands-to-run
+;;           (projectile-project-root)
+;;           " "
+;;           (buffer-file-name)
+;;           " "
+;;           "\"" (what-cursor-position) "\""
+;;           ))
 
 
-(defun compile-current-all()
-  (interactive)
-  (compilation-start (-compile-command " pep8,nosetests-project ")))
-(global-set-key (kbd "C-c c a") 'compile-current-all)
+;; (defun compile-current-all()
+;;   (interactive)
+;;   (compilation-start (-compile-command " pep8,nosetests-project ")))
+;; (global-set-key (kbd "C-c c a") 'compile-current-all)
 
 
-(defun compile-current-pep8()
-  (interactive)
-  (compilation-start (-compile-command " pep8 ")))
-(global-set-key (kbd "C-c c p") 'compile-current-pep8)
+;; (defun compile-current-pep8()
+;;   (interactive)
+;;   (compilation-start (-compile-command " pep8 ")))
+;; (global-set-key (kbd "C-c c p") 'compile-current-pep8)
 
 
-(defun compile-current-nosetests()
-  (interactive)
-  (compilation-start (-compile-command " nosetests ")))
-(global-set-key (kbd "C-c c t") 'compile-current-nosetests)
+;; (defun compile-current-nosetests()
+;;   (interactive)
+;;   (compilation-start (-compile-command " nosetests ")))
+;; (global-set-key (kbd "C-c c t") 'compile-current-nosetests)
 
 
 (require 'perspective)
@@ -682,3 +674,100 @@
 (load "~/.emacs.d/keys.el")
 (when (file-exists-p (format "%s%s" dropbox-path "emacs/private.el"))
   (load (format "%s%s" dropbox-path "emacs/private.el")))
+
+
+
+;; (add-to-list 'load-path "~/.emacs.d/elpa/flycheck-20170714.948/")
+(require 'flycheck)
+
+
+(defun flycheck-start-command-checker (checker callback)
+  "Start a command CHECKER with CALLBACK."
+  (let (process)
+    (condition-case err
+        (let* ((program (flycheck-find-checker-executable checker))
+               (args (flycheck-checker-substituted-arguments checker))
+               (command (funcall flycheck-command-wrapper-function
+                                 (cons program args)))
+               ;; Use pipes to receive output from the syntax checker.  They are
+               ;; more efficient and more robust than PTYs, which Emacs uses by
+               ;; default, and since we don't need any job control features, we
+               ;; can easily use pipes.
+               (process-connection-type nil))
+          ;; We pass do not associate the process with any buffer, by
+          ;; passing nil for the BUFFER argument of `start-process'.
+          ;; Instead, we just remember the buffer being checked in a
+          ;; process property (see below).  This neatly avoids all
+          ;; side-effects implied by attached a process to a buffer, which
+          ;; may cause conflicts with other packages.
+          ;;
+          ;; See https://github.com/flycheck/flycheck/issues/298 for an
+          ;; example for such a conflict.
+          (setq process (apply 'start-process (format "flycheck-%s" checker)
+                               nil command))
+          (setf (process-sentinel process) #'flycheck-handle-signal)
+          (setf (process-filter process) #'flycheck-receive-checker-output)
+          (set-process-query-on-exit-flag process nil)
+          ;; Remember the syntax checker, the buffer and the callback
+          (process-put process 'flycheck-checker checker)
+          (process-put process 'flycheck-callback callback)
+          (process-put process 'flycheck-buffer (current-buffer))
+          ;; Track the temporaries created by argument substitution in the
+          ;; process itself, to get rid of the global state ASAP.
+          (process-put process 'flycheck-temporaries flycheck-temporaries)
+          (setq flycheck-temporaries nil)
+          ;; Send the buffer to the process on standard input, if enabled
+          (when (flycheck-checker-get checker 'standard-input)
+            (save-excursion
+              (save-restriction
+                (widen)
+                (goto-char (point-min))
+                (while (not (eobp))
+                  (let ((from (point)))
+                    (forward-char (min 50 (- (point-max) (point))))
+                    (process-send-region process from (point))))
+                (process-send-eof process))))
+          ;; Return the process
+          process)
+      (error
+       ;; In case of error, clean up our resources, and report the error back to
+       ;; Flycheck
+       (flycheck-safe-delete-temporaries)
+       (when process
+         ;; No need to explicitly delete the temporary files of the process,
+         ;; because deleting runs the sentinel, which will delete them anyway.
+         (delete-process process))
+       (signal (car err) (cdr err))))))
+
+
+;; ;; turn on flychecking globally
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; ;; disable jshint since we prefer eslint checking
+(setq-default flycheck-disabled-checkers
+  (append flycheck-disabled-checkers
+    '(javascript-jshint)))
+
+
+;; use eslint with web-mode for jsx files
+(flycheck-add-mode 'javascript-eslint 'js2-mode)
+(setq-default flycheck-temp-prefix ".flycheck")
+
+
+;; To install eslint for flycheck/linter please run:
+;;
+;; $> sudo npm install -g eslint
+
+
+;; (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(setq flycheck-eslintrc "~/.eslint/.eslintrc")
+;; (setq flycheck-eslint-rules-directories '("~/.eslint/"))
+
+(add-hook 'js2-mode-hook
+          (defun my-js2-mode-setup ()
+            (flycheck-mode t)
+            (when (executable-find "eslint")
+              (flycheck-select-checker 'javascript-eslint))))
+
+(provide 'init)
+;;; init.el ends here

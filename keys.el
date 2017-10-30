@@ -44,6 +44,10 @@
 (global-set-key (kbd "C-M-n") 'forward-paragraph)
 (global-set-key (kbd "C-M-p") 'backward-paragraph)
 
+(global-set-key (kbd "M-n") 'forward-paragraph)
+(global-set-key (kbd "M-p") 'backward-paragraph)
+
+
 ;; undo & redo
 ;; (global-set-key (kbd "C-z") 'undo)
 ;; (global-set-key (kbd "C-Z") 'redo)
@@ -57,7 +61,6 @@
 ;; switch buffer
 (global-set-key (kbd "C-x .") 'next-buffer)
 (global-set-key (kbd "C-x ,") 'previous-buffer)
-
 
 ;; changing size of buffers
 (global-set-key (kbd "C-<") (kbd "C-u - 1 0 S-M-<left>"))
