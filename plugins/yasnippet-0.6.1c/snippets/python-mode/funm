@@ -1,0 +1,6 @@
+# -*- coding: utf-8 -*-
+# name: funm
+# contributor: Kuba Janoszek, kuba.janoszek at gmail dot com
+# --
+def ${1:name}(self$2):
+    $0

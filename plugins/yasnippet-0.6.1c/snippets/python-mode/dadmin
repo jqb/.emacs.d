@@ -1,0 +1,4 @@
+# --
+class $1Admin(admin.ModelAdmin):
+    ${pass}$0
+admin.site.register($1, $1Admin)

@@ -1,0 +1,4 @@
+# contributor: Kuba Janoszek <kuba.janoszek@gmail.com>
+# name: dimport.rtr
+# --
+from django.shortcuts import render_to_response

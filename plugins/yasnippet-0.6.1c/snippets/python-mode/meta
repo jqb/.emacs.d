@@ -1,0 +1,5 @@
+class $1(type):
+    def __new__(cls, cls_name, bases, attrs):
+        super_new = super($1, cls).__new__
+        $0
+        return super_new(cls, cls_name, bases, attrs)

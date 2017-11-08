@@ -1,0 +1,4 @@
+# contributor: Kuba Janoszek <kuba.janoszek@gmail.com>
+# name: dimport.HttpResponse
+# --
+from django.http import HttpResponse
