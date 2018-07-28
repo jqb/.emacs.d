@@ -1,5 +1,8 @@
 ;; GLOBAL KEY BINDINGS
+
+
 (global-set-key [f12] 'menu-bar-mode)
+
 
 (global-set-key (kbd "C-c n") 'delete-trailing-whitespace)
 
@@ -48,27 +51,13 @@
 (global-set-key (kbd "M-p") 'backward-paragraph)
 
 
-;; undo & redo
-;; (global-set-key (kbd "C-z") 'undo)
-;; (global-set-key (kbd "C-Z") 'redo)
-;; END OF GLOBAL KEY BINDING
-
-
-;; dired
-(global-set-key (kbd "C-x C-j") 'dired-jump)
-
-
-;; switch buffer
-(global-set-key (kbd "C-x .") 'next-buffer)
-(global-set-key (kbd "C-x ,") 'previous-buffer)
-
-;; changing size of buffers
-(global-set-key (kbd "C-<") (kbd "C-u - 1 0 S-M-<left>"))
-(global-set-key (kbd "C->") (kbd "C-u - 1 0 S-M-<right>"))
-
 (global-set-key (kbd "C-{") (kbd "C-u - 1 0 S-M-<up>"))
 (global-set-key (kbd "C-:") (kbd "C-u - 1 0 S-M-<down>"))
 
-(global-set-key (kbd "C-c p") (lambda ()
+(global-set-key (kbd "C-x p") (lambda ()
                                 (interactive)
                                 (other-window -1))) ;; back one
+
+
+(provide 'keys)
+;;; keys.el ends here
