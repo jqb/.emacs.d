@@ -8,3 +8,4 @@ elpa/*
 .DS_Store
 recentf
 eshell/*
+session.*
