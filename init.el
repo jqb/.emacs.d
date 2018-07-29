@@ -1,5 +1,6 @@
 (defconst emacs-start-time (current-time))
 
+
 (unless noninteractive
   (message "Loading %s..." load-file-name))
 
@@ -40,31 +41,20 @@
 (setq mac-command-modifier 'meta)
 
 
-;; Dropbox path
-;;
-;; - by default: ~/Dropbox/emacs/private.el
-(setq dropbox-path "~/Dropbox/")
-;; - on windows:
-(if (fboundp 'w32-send-sys-command)
-    (setq dropbox-path "C:/Users/kuba/Dropbox/"))
-
-
 ;;;;;;;
 ;; Emacs 25.5 on windows is complaining that mail .emacs.d is on the
 ;; load-path, so - commenting out
 ;;
 ;; (add-to-list 'load-path "~/.emacs.d/")
 (add-to-list 'load-path "~/.emacs.d/elpa/")
-;; (add-to-list 'load-path "~/.emacs.d/magit/")
 (add-to-list 'load-path "~/.emacs.d/plugins/")
-(add-to-list 'load-path "~/.emacs.d/plugins/mark-multiple/")
-(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet-0.6.1c")
 (add-to-list 'load-path "~/.emacs.d/plugins/js2-mode/")
-(add-to-list 'load-path "~/.emacs.d/plugins/monky/")
-(add-to-list 'load-path "~/.emacs.d/plugins/evernote-mode/")
+
+;; separate directory with plugins - to avoid gitsubmodules nonsense
+(add-to-list 'load-path "~/.emacs.plugins/bookmark-plus/")
 
 
-(require 'bind-key)
+(require 'bind-key)  ;; it's in plugins directory
 (require 'use-package)
 ;;;;;;;
 
@@ -78,7 +68,7 @@
 
 ;; (load "mmm-mako.el")
 ;; (mmm-add-mode-ext-class 'html-mode "\\.mak\\'" 'mako)
-(add-to-list 'auto-mode-alist '("\\.mak\\'" . html-mode))
+;; (add-to-list 'auto-mode-alist '("\\.mak\\'" . html-mode))
 
 
 (use-package
@@ -115,6 +105,7 @@
    ;; (bind-key "C-x f" 'recentf-ido-find-file)
    ))
 
+
 ;; (require 'sunrise-commander)
 ;; (require 'sunrise-x-tree)
 
@@ -143,16 +134,20 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
+
 (set-face-bold-p 'font-lock-keyword-face t)
 ;; (set-face-italic-p 'font-lock-comment-face t)
 ;; (set-face-italic-p 'italic nil)
+
 
 (setq-default show-trailing-whitespace t)
 (setq-default truncate-lines t)
 (setq-default indent-tabs-mode nil)
 
+
 (setq dabbrev-case-fold-search nil)
 (setq dabbrev-case-replace t)
+
 
 ;; linum mode
 ;; (global-linum-mode -1)  ;; I'm turning it on only for code edition see below
@@ -185,6 +180,9 @@
 
 ;; devils's pie mode
 ;; (add-to-list 'auto-mode-alist '("\\.ds\\'" . lisp-mode))
+
+
+(require 'bookmark+)
 
 
 (require 'bm)
@@ -231,6 +229,19 @@
   )
 
 
+;; Configure flymake/pylint for Python
+(when (load "flymake" t)
+  (defun flymake-pylint-init ()
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list "pylint" (list local-file))))
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.py\\'" flymake-pylint-init)))
+
+
 (use-package smooth-scrolling)
 (use-package coffee-mode)
 (use-package clojure-mode)
@@ -245,13 +256,13 @@
     ))
 
 
-;; (use-package
-;;  tramp
-;;  :defer t
-;;  :config
-;;  (progn
-;;    (setq tramp-default-method "ssh")
-;;    ))
+(use-package
+ tramp
+ :defer t
+ :config
+ (progn
+   (setq tramp-default-method "ssh")
+   ))
 (setq tramp-mode nil)
 
 
@@ -297,11 +308,13 @@
 ;; (global-set-key (kbd "C-x C-g h") 'monky-status)
 
 
-(use-package
- php-mode
- :defer t
- :mode ("\\.php\\'" . php-mode)
- )
+;; PHP... not used at all. Let's leave it like that.
+;;
+;; (use-package
+;;  php-mode
+;;  :defer t
+;;  :mode ("\\.php\\'" . php-mode)
+;;  )
 
 
 (defun my-coding-mode-hook()
@@ -561,11 +574,19 @@
 
 
 ;; (require 'dropdown-list)  ;; <= previously needed by yasnippet in "plugins"
+;; For one of snippets for java:
+(defun my/capitalize-first-char (&optional string)
+  "Capitalize only the first character of the input STRING."
+  (when (and string (> (length string) 0))
+    (let ((first-char (substring string nil 1))
+          (rest-str   (substring string 1)))
+      (concat (capitalize first-char) rest-str))))
+
+
 (require 'yasnippet)
 (setq yas-snippet-dirs
-      '(;; "~/.emacs.d/snippets" ;personal snippets
-        "~/.emacs.d/plugins/yasnippet-0.6.1c/snippets" ;my old snippets
-        "~/.emacs.d/elpa/yasnippet-20170723.418/snippets" ;default
+      '("~/.emacs.d/plugins/yasnippet-0.6.1c/snippets"     ;; my old snippets
+        "~/.emacs.d/elpa/yasnippet-20170923.1646/snippets" ;; different from different machines... TODO :(
         ))
 (yas/load-directory "~/.emacs.d/plugins/yasnippet-0.6.1c/snippets")
 (yas/initialize)
@@ -611,9 +632,6 @@
 ;; (global-set-key (kbd "C-*") 'mark-all-like-this)
 ;; ^^ like the other two, but takes an argument (negtive is previous)
 
-
-;; sessions
-;; (load "~/.emacs.d/sessions.el")
 
 ;; (require 'projectile)
 ;; (require 'projectile-autoloads)
@@ -668,16 +686,6 @@
             (setq-local word-wrap nil)))
 
 
-;; (require 'evernote-mode)
-
-
-(load "~/.emacs.d/keys.el")
-(when (file-exists-p (format "%s%s" dropbox-path "emacs/private.el"))
-  (load (format "%s%s" dropbox-path "emacs/private.el")))
-
-
-
-;; (add-to-list 'load-path "~/.emacs.d/elpa/flycheck-20170714.948/")
 (require 'flycheck)
 
 
@@ -740,17 +748,19 @@
        (signal (car err) (cdr err))))))
 
 
-;; ;; turn on flychecking globally
+;; turn on flychecking globally
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
-;; ;; disable jshint since we prefer eslint checking
+
+;; disable jshint since we prefer eslint checking
 (setq-default flycheck-disabled-checkers
   (append flycheck-disabled-checkers
     '(javascript-jshint)))
 
 
 ;; use eslint with web-mode for jsx files
-(flycheck-add-mode 'javascript-eslint 'js2-mode)
+;; NOTE: commented because of checking rjsx-mode
+;; (flycheck-add-mode 'javascript-eslint 'js2-mode)
 (setq-default flycheck-temp-prefix ".flycheck")
 
 
@@ -763,11 +773,105 @@
 (setq flycheck-eslintrc "~/.eslint/.eslintrc")
 ;; (setq flycheck-eslint-rules-directories '("~/.eslint/"))
 
-(add-hook 'js2-mode-hook
-          (defun my-js2-mode-setup ()
-            (flycheck-mode t)
-            (when (executable-find "eslint")
-              (flycheck-select-checker 'javascript-eslint))))
+;; NOTE: commented because of checking rjsx-mode
+;; (add-hook 'js2-mode-hook
+;;           (defun my-js2-mode-setup ()
+;;             (flycheck-mode t)
+;;             (when (executable-find "eslint")
+;;               (flycheck-select-checker 'javascript-eslint))))
+
+
+;; Other aproach to the problem.
+(defun sudo-edit (&optional arg)
+  "Edit currently visited file as root.
+
+With a prefix ARG prompt for a file to visit.
+Will also prompt for a file to visit if current
+buffer is not visiting a file."
+  (interactive "P")
+  (if (or arg (not buffer-file-name))
+      (find-file (concat "/sudo:root@localhost:"
+                         (ido-read-file-name "Find file(as root): ")))
+    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
+
+;; neotree
+;;
+;; Don't quite use it at all.
+;;
+;; (require 'neotree)
+;; (global-set-key [f8] 'neotree-toggle)
+
+
+;; typescript & JSX
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+
+
+;; formats the buffer before saving
+(add-hook 'before-save-hook 'tide-format-before-save)
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
+(add-hook 'js2-mode-hook #'setup-tide-mode)
+
+
+(require 'web-mode)
+
+
+;; TSX
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (string-equal "tsx" (file-name-extension buffer-file-name))
+              (setup-tide-mode))))
+
+
+;; JSX
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (string-equal "jsx" (file-name-extension buffer-file-name))
+              (setup-tide-mode))))
+
+
+(use-package tide-mode
+  :config
+  (progn
+    ;; configure javascript-tide checker to run after your default javascript checker:
+    (flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
+    ;; configure jsx-tide checker to run after your default jsx checker:
+    (flycheck-add-mode 'javascript-eslint 'web-mode)
+    (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
+    ))
+;; end / typescript
+
+
+;; kotlin
+(setq kotlin-tab-width 4)
+;; end / kotlin
+
+
+(load "~/.emacs.d/keys.el")
+
+
+;; servers
+(defun connect-jqbdev01 ()
+  (interactive)
+  (dired "/ssh:root@jqbdev01:/home"))
+;; end / servers
+
 
 (provide 'init)
 ;;; init.el ends here
