@@ -6,3 +6,5 @@ url/*
 projectile-bookmarks.eld
 elpa/*
 .DS_Store
+recentf
+eshell/*
