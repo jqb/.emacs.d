@@ -585,10 +585,10 @@
 
 (require 'yasnippet)
 (setq yas-snippet-dirs
-      '("~/.emacs.d/plugins/yasnippet-0.6.1c/snippets"     ;; my old snippets
+      '("~/.emacs.plugins/snippets"  ;; my old snippets, as a separate repo now
         "~/.emacs.d/elpa/yasnippet-20170923.1646/snippets" ;; different from different machines... TODO :(
         ))
-(yas/load-directory "~/.emacs.d/plugins/yasnippet-0.6.1c/snippets")
+(yas/load-directory "~/.emacs.plugins/snippets")
 (yas/initialize)
 
 
