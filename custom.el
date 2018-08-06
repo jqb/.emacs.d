@@ -10,7 +10,7 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (rjsx-mode typescript-mode ox-gfm markdown-preview-eww markdown-preview-mode markdown-mode+ graphviz-dot-mode python-mode erlang nginx-mode markdown-mode yaml-mode magit-gh-pulls magit dockerfile-mode ag bookmark+ projectile popup)))
+    (tide web-mode flycheck elpy rjsx-mode typescript-mode ox-gfm markdown-preview-eww markdown-preview-mode markdown-mode+ graphviz-dot-mode python-mode erlang nginx-mode markdown-mode yaml-mode magit-gh-pulls magit dockerfile-mode ag bookmark+ projectile popup)))
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(tooltip-mode nil))
