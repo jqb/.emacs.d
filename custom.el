@@ -3,14 +3,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
+ '(bmkp-last-as-first-bookmark-file nil)
+ '(bookmark-default-file "~/.emacs.d/bookmarks")
  '(column-number-mode t)
  '(elpy-rpc-python-command "python3")
  '(inhibit-startup-echo-area-message nil)
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (tide web-mode flycheck elpy rjsx-mode typescript-mode ox-gfm markdown-preview-eww markdown-preview-mode markdown-mode+ graphviz-dot-mode python-mode erlang nginx-mode markdown-mode yaml-mode magit-gh-pulls magit dockerfile-mode ag bookmark+ projectile popup)))
+    (ssh tide web-mode flycheck elpy rjsx-mode typescript-mode ox-gfm markdown-preview-eww markdown-preview-mode markdown-mode+ graphviz-dot-mode python-mode erlang nginx-mode markdown-mode yaml-mode magit-gh-pulls magit dockerfile-mode ag bookmark+ projectile popup)))
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(tooltip-mode nil))
