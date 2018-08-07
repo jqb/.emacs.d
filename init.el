@@ -256,14 +256,17 @@
     ))
 
 
-(use-package
- tramp
- :defer t
- :config
- (progn
-   (setq tramp-default-method "ssh")
-   ))
-(setq tramp-mode nil)
+;; For some reason I don't understant, this doesn't work:
+;;
+;; (use-package
+;;  tramp
+;;  :defer t
+;;  :config
+;;  (progn
+;;    (setq tramp-default-method "ssh")
+;;    ))
+;; (setq tramp-mode nil)
+(setq tramp-default-method "ssh")
 
 
 (use-package
