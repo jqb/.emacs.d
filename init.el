@@ -16,7 +16,7 @@
 
 
 ;; mac
-(if (eq system-type 'darwin)
+(if (or (eq system-type 'darwin) (eq system-type 'gnu/linux))
     (progn
       (setenv "PATH" (concat
                       (expand-file-name "~/tools/bin") ":/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:" (getenv "PATH")))
