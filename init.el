@@ -1,8 +1,7 @@
 (defconst emacs-start-time (current-time))
 
 
-(unless noninteractive
-  (message "Loading %s..." load-file-name))
+(unless noninteractive (message "Loading %s..." load-file-name))
 
 
 ;; extend the path on windows
