@@ -44,7 +44,10 @@
 (message "===========================")
 
 
-(load "~/.emacs.d/keys.el" 'noerror)
+;; This is only for debugging purposes if somethings' would fail
+;; during the loading of init.el file.
+;;
+;; (load "~/.emacs.d/keys.el" 'noerror)
 
 
 ;; SYSTEM :: Load system dependent file
@@ -478,7 +481,8 @@
  :init
  (progn
    (bind-key "M-i" 'ido-goto-symbol)
-   (bind-key "C-x f" 'recentf-ido-find-file))
+   (bind-key "C-x f" 'recentf-ido-find-file)
+   )
  :config
  (progn
    (ido-mode t)
@@ -923,9 +927,6 @@ buffer is not visiting a file."
 ;; end / kotlin
 
 
-(load "~/.emacs.d/keys.el")
-
-
 ;; SYSTEM MACHINE :: Load system + machine dependent file
 (if (file-exists-p system-machine-file)
     (progn
@@ -935,6 +936,9 @@ buffer is not visiting a file."
   (message "SYSTEM MACHINE FILE %s DOES NOT exists. Nothing to load." system-machine-file)
   )
 ;; END / SYSTEM
+
+
+(load "~/.emacs.d/keys.el")
 
 
 (provide 'init)
