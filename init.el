@@ -105,10 +105,6 @@
    ))
 
 
-;; (require 'sunrise-commander)
-;; (require 'sunrise-x-tree)
-
-
 (setq backup-inhibited t) ; turn off backup files
 (setq x-select-enable-clipboard t)
 (setq line-number-mode t)
