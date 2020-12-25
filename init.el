@@ -92,12 +92,19 @@
 
 ;; separate directory with plugins - to avoid gitsubmodules nonsense
 (add-to-list 'load-path "~/.emacs.plugins/bookmark-plus/")
+(add-to-list 'load-path "~/.emacs.plugins/perspective-el/")
 
 
 (require 'cl-lib)
 (require 'bind-key)
 (require 'use-package)
 (require 'recentf)
+
+
+;; https://github.com/nex3/perspective-el
+;; ~/.emacs.plugins/perspective-el
+(require 'perspective)
+(persp-mode)
 
 
 ;; The next line seem to cause troubles on some machines
@@ -730,14 +737,6 @@
 ;;   (interactive)
 ;;   (compilation-start (-compile-command " nosetests ")))
 ;; (global-set-key (kbd "C-c c t") 'compile-current-nosetests)
-
-
-(require 'perspective)
-(persp-mode)
-
-
-(when (not package-archive-contents)
-  (package-refresh-contents))
 
 
 (add-hook 'dired-toggle-mode-hook
