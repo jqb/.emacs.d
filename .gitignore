@@ -5,7 +5,9 @@ bookmarks
 url/*
 projectile-bookmarks.eld
 elpa/*
+elpy/*
 .DS_Store
 recentf
 eshell/*
 session.*
+transient/*

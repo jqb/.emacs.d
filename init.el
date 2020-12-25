@@ -4,30 +4,75 @@
 (unless noninteractive (message "Loading %s..." load-file-name))
 
 
-;; extend the path on windows
-(if (eq system-type 'windows-nt)
-    (progn
-      (setenv "PATH"
-              (concat "C:/Program Files (x86)/Git/bin" ";" (getenv "PATH")) )
-      (setq visible-bell 1)
+(setq normalized-system-type
+      (replace-regexp-in-string "[/ -]" "_" (format "%s" system-type)))
+(setq normalized-system-name
+      (replace-regexp-in-string "[/ -]" "_" (format "%s" system-name)))
+(setq system-type-file
+      (expand-file-name
+       (concat "~/.emacs.d/system/" normalized-system-type ".el")
+       )
       )
-  )
-
-
-;; mac
-(if (or (eq system-type 'darwin) (eq system-type 'gnu/linux))
-    (progn
-      (setenv "PATH" (concat
-                      (expand-file-name "~/tools/bin") ":/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:" (getenv "PATH")))
-      (setq exec-path (cons "/usr/local/bin" exec-path))
-      (setq shell-file-name "bash")
-      (setq shell-command-switch "-ic")
+(setq system-machine-file
+      (expand-file-name (concat
+                         "~/.emacs.d/system/"
+                         normalized-system-type
+                         "__"
+                         normalized-system-name
+                         ".el")
+       )
       )
+(setq custom-file
+      (concat
+       "~/.emacs.d/custom/custom__"
+       normalized-system-type
+       "__"
+       normalized-system-name
+       ".el"
+       )
+      )
+(setq custom-file-fallback "~/.emacs.d/custom/custom.el")
+
+
+(message "===========================")
+(message "VAR: normalized-system-type = %s" normalized-system-type)
+(message "VAR: normalized-system-name = %s" normalized-system-name)
+(message "VAR: system-type-file       = %s" system-type-file)
+(message "VAR: system-machine-file    = %s" system-machine-file)
+(message "VAR: custom-file            = %s" custom-file)
+(message "VAR: custom-file-fallback   = %s" custom-file-fallback)
+(message "===========================")
+
+
+(load "~/.emacs.d/keys.el" 'noerror)
+
+
+;; SYSTEM :: Load system dependent file
+(if (file-exists-p system-type-file)
+    (progn
+      (message "SYSTEM FILE %s exists. It will be loaded." system-type-file)
+      (load system-type-file)
+      )
+  (message "SYSTEM %s DOES NOT exists. Nothing to load." system-type-file)
   )
+;; END / SYSTEM
 
 
-(setq custom-file "~/.emacs.d/custom.el")
+;; CUSTOM :: emacs'es own custom file - different on each OS/machine
+(if (file-exists-p custom-file)
+    (progn
+      (message "CUSTOM FILE %s exists. It will be loaded." custom-file)
+      )
+  (progn
+    (message "CUSTOM FILE %s DOES NOT exists. Falling back to %s."
+             custom-file
+             custom-file-fallback
+             )
+    (setq custom-file custom-file-fallback)
+    )
+  )
 (load custom-file 'noerror)
+;; END / CUSTOM
 
 
 (unless window-system
@@ -36,12 +81,8 @@
 (if window-system (load "~/.emacs.d/xemacs-only.el"))
 
 
-;; MAC needs this
-(setq mac-command-modifier 'meta)
-
-
 ;;;;;;;
-;; Emacs 25.5 on windows is complaining that mail .emacs.d is on the
+;; Emacs 25.5 on windows is complaining that main .emacs.d is on the
 ;; load-path, so - commenting out
 ;;
 ;; (add-to-list 'load-path "~/.emacs.d/")
@@ -53,12 +94,34 @@
 (add-to-list 'load-path "~/.emacs.plugins/bookmark-plus/")
 
 
-(require 'bind-key)  ;; it's in plugins directory
-(require 'use-package)
-;;;;;;;
-
-
 (require 'cl-lib)
+(require 'bind-key)
+(require 'use-package)
+(require 'recentf)
+
+
+;; The next line seem to cause troubles on some machines
+;;(recentf-mode 1)
+
+
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives
+             '("gnu" . "http://elpa.gnu.org/packages/") t)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+
+
+;; As found here:
+;; https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
+;; those few lines below should make sure I have all the packages I've
+;; previously installed. They were stored in custom.el
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
+(package-install-selected-packages)
+;;;;;;;
 
 
 ;; mmm & mako mode
@@ -171,6 +234,7 @@
 		'("\\.zip\\'" ".zip" "unzip")))
 (setq dired-dwim-target t)
 (setq wdired-allow-to-change-permissions t)
+(setq dired-listing-switches "-aBhl  --group-directories-first")
 
 
 ;; devils's pie mode
@@ -208,7 +272,7 @@
 
 
 (when (load "flymake" t)
-  (defun flymake-pyflakes-init ()
+  (defun flymake-flake8-init ()
      ; Make sure it's not a remote buffer or flymake would not work
      (when (not (subsetp (list (current-buffer)) (tramp-list-remote-buffers)))
       (let* ((temp-file (flymake-init-create-temp-buffer-copy
@@ -216,25 +280,42 @@
              (local-file (file-relative-name
                           temp-file
                           (file-name-directory buffer-file-name))))
-        (list "pyflakes" (list temp-file)))))
+        (list "~/.local/bin/flake8" (list temp-file)))))
   (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.py\\'" flymake-pyflakes-init))
+               '("\\.py\\'" flymake-flake8-init))
 
   (delete '("\\.html?\\'" flymake-xml-init) flymake-allowed-file-name-masks)
   )
 
 
+;; (when (load "flymake" t)
+;;   (defun flymake-pyflakes-init ()
+;;      ; Make sure it's not a remote buffer or flymake would not work
+;;      (when (not (subsetp (list (current-buffer)) (tramp-list-remote-buffers)))
+;;       (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;                          'flymake-create-temp-inplace))
+;;              (local-file (file-relative-name
+;;                           temp-file
+;;                           (file-name-directory buffer-file-name))))
+;;         (list "~/.local/bin/pyflakes" (list temp-file)))))
+;;   (add-to-list 'flymake-allowed-file-name-masks
+;;                '("\\.py\\'" flymake-pyflakes-init))
+
+;;   (delete '("\\.html?\\'" flymake-xml-init) flymake-allowed-file-name-masks)
+;;   )
+
+
 ;; Configure flymake/pylint for Python
-(when (load "flymake" t)
-  (defun flymake-pylint-init ()
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                       'flymake-create-temp-inplace))
-           (local-file (file-relative-name
-                        temp-file
-                        (file-name-directory buffer-file-name))))
-      (list "pylint" (list local-file))))
-  (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.py\\'" flymake-pylint-init)))
+;; (when (load "flymake" t)
+;;   (defun flymake-pylint-init ()
+;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;                        'flymake-create-temp-inplace))
+;;            (local-file (file-relative-name
+;;                         temp-file
+;;                         (file-name-directory buffer-file-name))))
+;;       (list "~/.local/bin/pylint" (list local-file))))
+;;   (add-to-list 'flymake-allowed-file-name-masks
+;;                '("\\.py\\'" flymake-pylint-init)))
 
 
 (use-package smooth-scrolling)
@@ -271,7 +352,7 @@
    (setq uniquify-buffer-name-style 'forward)
    (setq uniquify-separator "/")
    (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
-   (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+   (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
    ))
 
 
@@ -375,10 +456,6 @@
    (bind-key "C-x M-t" 'text-translator)
    (bind-key "C-x M-T" 'text-translator-translate-last-string)
    ))
-
-
-(require 'recentf)
-(recentf-mode 1)
 
 
 (use-package
@@ -557,29 +634,6 @@
 ;;       (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
 
 
-;; ELPA
-(require 'package)
-(add-to-list 'package-archives
-             '("gnu" . "http://elpa.gnu.org/packages/") t)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives
-             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
-
-
-;; As found here:
-;; https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
-;; those few lines below should make sure I have all the packages I've
-;; previously installed. They were stored in custom.el
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
-(package-install-selected-packages)
-
-
-
 ;; (require 'dropdown-list)  ;; <= previously needed by yasnippet in "plugins"
 ;; For one of snippets for java:
 (defun my/capitalize-first-char (&optional string)
@@ -606,7 +660,6 @@
 
 ;; cycle through buffers
 ;; (global-set-key (kbd "<C-tab>") 'bury-buffer)
-
 
 
 ;; bat-mode - NOT IN HEAVY USE
@@ -642,6 +695,8 @@
 ;; (require 'projectile)
 ;; (require 'projectile-autoloads)
 (projectile-global-mode)
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map)
 
 
 (require 'popup)
@@ -692,82 +747,82 @@
             (setq-local word-wrap nil)))
 
 
-(require 'flycheck)
+;; (require 'flycheck)
 
 
-(defun flycheck-start-command-checker (checker callback)
-  "Start a command CHECKER with CALLBACK."
-  (let (process)
-    (condition-case err
-        (let* ((program (flycheck-find-checker-executable checker))
-               (args (flycheck-checker-substituted-arguments checker))
-               (command (funcall flycheck-command-wrapper-function
-                                 (cons program args)))
-               ;; Use pipes to receive output from the syntax checker.  They are
-               ;; more efficient and more robust than PTYs, which Emacs uses by
-               ;; default, and since we don't need any job control features, we
-               ;; can easily use pipes.
-               (process-connection-type nil))
-          ;; We pass do not associate the process with any buffer, by
-          ;; passing nil for the BUFFER argument of `start-process'.
-          ;; Instead, we just remember the buffer being checked in a
-          ;; process property (see below).  This neatly avoids all
-          ;; side-effects implied by attached a process to a buffer, which
-          ;; may cause conflicts with other packages.
-          ;;
-          ;; See https://github.com/flycheck/flycheck/issues/298 for an
-          ;; example for such a conflict.
-          (setq process (apply 'start-process (format "flycheck-%s" checker)
-                               nil command))
-          (setf (process-sentinel process) #'flycheck-handle-signal)
-          (setf (process-filter process) #'flycheck-receive-checker-output)
-          (set-process-query-on-exit-flag process nil)
-          ;; Remember the syntax checker, the buffer and the callback
-          (process-put process 'flycheck-checker checker)
-          (process-put process 'flycheck-callback callback)
-          (process-put process 'flycheck-buffer (current-buffer))
-          ;; Track the temporaries created by argument substitution in the
-          ;; process itself, to get rid of the global state ASAP.
-          (process-put process 'flycheck-temporaries flycheck-temporaries)
-          (setq flycheck-temporaries nil)
-          ;; Send the buffer to the process on standard input, if enabled
-          (when (flycheck-checker-get checker 'standard-input)
-            (save-excursion
-              (save-restriction
-                (widen)
-                (goto-char (point-min))
-                (while (not (eobp))
-                  (let ((from (point)))
-                    (forward-char (min 50 (- (point-max) (point))))
-                    (process-send-region process from (point))))
-                (process-send-eof process))))
-          ;; Return the process
-          process)
-      (error
-       ;; In case of error, clean up our resources, and report the error back to
-       ;; Flycheck
-       (flycheck-safe-delete-temporaries)
-       (when process
-         ;; No need to explicitly delete the temporary files of the process,
-         ;; because deleting runs the sentinel, which will delete them anyway.
-         (delete-process process))
-       (signal (car err) (cdr err))))))
+;; (defun flycheck-start-command-checker (checker callback)
+;;   "Start a command CHECKER with CALLBACK."
+;;   (let (process)
+;;     (condition-case err
+;;         (let* ((program (flycheck-find-checker-executable checker))
+;;                (args (flycheck-checker-substituted-arguments checker))
+;;                (command (funcall flycheck-command-wrapper-function
+;;                                  (cons program args)))
+;;                ;; Use pipes to receive output from the syntax checker.  They are
+;;                ;; more efficient and more robust than PTYs, which Emacs uses by
+;;                ;; default, and since we don't need any job control features, we
+;;                ;; can easily use pipes.
+;;                (process-connection-type nil))
+;;           ;; We pass do not associate the process with any buffer, by
+;;           ;; passing nil for the BUFFER argument of `start-process'.
+;;           ;; Instead, we just remember the buffer being checked in a
+;;           ;; process property (see below).  This neatly avoids all
+;;           ;; side-effects implied by attached a process to a buffer, which
+;;           ;; may cause conflicts with other packages.
+;;           ;;
+;;           ;; See https://github.com/flycheck/flycheck/issues/298 for an
+;;           ;; example for such a conflict.
+;;           (setq process (apply 'start-process (format "flycheck-%s" checker)
+;;                                nil command))
+;;           (setf (process-sentinel process) #'flycheck-handle-signal)
+;;           (setf (process-filter process) #'flycheck-receive-checker-output)
+;;           (set-process-query-on-exit-flag process nil)
+;;           ;; Remember the syntax checker, the buffer and the callback
+;;           (process-put process 'flycheck-checker checker)
+;;           (process-put process 'flycheck-callback callback)
+;;           (process-put process 'flycheck-buffer (current-buffer))
+;;           ;; Track the temporaries created by argument substitution in the
+;;           ;; process itself, to get rid of the global state ASAP.
+;;           (process-put process 'flycheck-temporaries flycheck-temporaries)
+;;           (setq flycheck-temporaries nil)
+;;           ;; Send the buffer to the process on standard input, if enabled
+;;           (when (flycheck-checker-get checker 'standard-input)
+;;             (save-excursion
+;;               (save-restriction
+;;                 (widen)
+;;                 (goto-char (point-min))
+;;                 (while (not (eobp))
+;;                   (let ((from (point)))
+;;                     (forward-char (min 50 (- (point-max) (point))))
+;;                     (process-send-region process from (point))))
+;;                 (process-send-eof process))))
+;;           ;; Return the process
+;;           process)
+;;       (error
+;;        ;; In case of error, clean up our resources, and report the error back to
+;;        ;; Flycheck
+;;        (flycheck-safe-delete-temporaries)
+;;        (when process
+;;          ;; No need to explicitly delete the temporary files of the process,
+;;          ;; because deleting runs the sentinel, which will delete them anyway.
+;;          (delete-process process))
+;;        (signal (car err) (cdr err))))))
 
 
 ;; turn on flychecking globally
-(add-hook 'after-init-hook #'global-flycheck-mode)
+;; (add-hook 'after-init-hook #'global-flycheck-mode)
 
 
 ;; disable jshint since we prefer eslint checking
-(setq-default flycheck-disabled-checkers
-  (append flycheck-disabled-checkers
-    '(javascript-jshint)))
+;; (setq-default flycheck-disabled-checkers
+;;   (append flycheck-disabled-checkers
+;;     '(javascript-jshint)))
 
 
 ;; use eslint with web-mode for jsx files
 ;; NOTE: commented because of checking rjsx-mode
 ;; (flycheck-add-mode 'javascript-eslint 'js2-mode)
-(setq-default flycheck-temp-prefix ".flycheck")
+;; (setq-default flycheck-temp-prefix ".flycheck")
 
 
 ;; To install eslint for flycheck/linter please run:
@@ -776,7 +831,7 @@
 
 
 ;; (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-(setq flycheck-eslintrc "~/.eslint/.eslintrc")
+;; (setq flycheck-eslintrc "~/.eslint/.eslintrc")
 ;; (setq flycheck-eslint-rules-directories '("~/.eslint/"))
 
 ;; NOTE: commented because of checking rjsx-mode
@@ -872,11 +927,15 @@ buffer is not visiting a file."
 (load "~/.emacs.d/keys.el")
 
 
-;; servers
-(defun connect-jqbdev01 ()
-  (interactive)
-  (dired "/ssh:root@jqbdev01:/home"))
-;; end / servers
+;; SYSTEM MACHINE :: Load system + machine dependent file
+(if (file-exists-p system-machine-file)
+    (progn
+      (message "SYSTEM MACHINE FILE %s exists. It will be loaded." system-machine-file)
+      (load system-type-file)
+      )
+  (message "SYSTEM MACHINE FILE %s DOES NOT exists. Nothing to load." system-machine-file)
+  )
+;; END / SYSTEM
 
 
 (provide 'init)
