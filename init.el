@@ -931,7 +931,7 @@ buffer is not visiting a file."
 (if (file-exists-p system-machine-file)
     (progn
       (message "SYSTEM MACHINE FILE %s exists. It will be loaded." system-machine-file)
-      (load system-type-file)
+      (load system-machine-file)
       )
   (message "SYSTEM MACHINE FILE %s DOES NOT exists. Nothing to load." system-machine-file)
   )
