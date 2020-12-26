@@ -244,7 +244,7 @@
 		'("\\.zip\\'" ".zip" "unzip")))
 (setq dired-dwim-target t)
 (setq wdired-allow-to-change-permissions t)
-(setq dired-listing-switches "-aBhl  --group-directories-first")
+(setq dired-listing-switches "-lAh1v --group-directories-first")
 
 
 ;; devils's pie mode
