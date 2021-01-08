@@ -6,6 +6,12 @@
 
 ;; USING Git with OpenSSH-agent on Windows:
 ;; https://snowdrift.tech/cli/ssh/git/tutorials/2019/01/31/using-ssh-agent-git-windows.html
+;;
+;; TL;DR > Command to run:
+;;
+;; PS> [Environment]::SetEnvironmentVariable("GIT_SSH", "$((Get-Command ssh).Source)", [System.EnvironmentVariableTarget]::User)
+
+
 (setq normalized-system-type
       (replace-regexp-in-string "[/ -]" "_" (format "%s" system-type)))
 (setq normalized-system-name
