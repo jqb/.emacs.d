@@ -4,6 +4,8 @@
 (unless noninteractive (message "Loading %s..." load-file-name))
 
 
+;; USING Git with OpenSSH-agent on Windows:
+;; https://snowdrift.tech/cli/ssh/git/tutorials/2019/01/31/using-ssh-agent-git-windows.html
 (setq normalized-system-type
       (replace-regexp-in-string "[/ -]" "_" (format "%s" system-type)))
 (setq normalized-system-name
