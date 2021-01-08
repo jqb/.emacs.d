@@ -10,14 +10,11 @@
  '(inhibit-startup-echo-area-message nil)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   (quote
-    (jinja2-mode ssh tide web-mode flycheck elpy rjsx-mode typescript-mode ox-gfm graphviz-dot-mode python-mode erlang nginx-mode markdown-mode yaml-mode magit-gh-pulls magit dockerfile-mode ag bookmark+ projectile popup)))
+   '(tree-sitter-langs tree-sitter csharp-mode jinja2-mode ssh tide web-mode flycheck elpy rjsx-mode typescript-mode ox-gfm graphviz-dot-mode python-mode erlang nginx-mode markdown-mode yaml-mode magit-gh-pulls magit dockerfile-mode ag bookmark+ projectile popup))
  '(safe-local-variable-values
-   (quote
-    ((eval set
-           (make-local-variable
-            (quote projectile-globally-ignored-directories))
-           (append projectile-globally-ignored-directories ".penv")))))
+   '((eval set
+           (make-local-variable 'projectile-globally-ignored-directories)
+           (append projectile-globally-ignored-directories ".penv"))))
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(tooltip-mode nil))
