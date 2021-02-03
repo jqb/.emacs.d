@@ -8,5 +8,5 @@
                   (getenv "PATH")))
   (setq exec-path (cons "/usr/local/bin" exec-path))
   (setq shell-file-name "bash")
-  (setq shell-command-switch "-ic")
+  (setq shell-command-switch "-c")
   )
