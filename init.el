@@ -557,7 +557,6 @@
  less-mode
  :mode (
    ("\\.less\\'" . less-mode)
-   ("\\.scss\\'" . less-mode)  ;; just workaround for a while
  )
  :config
  (progn
@@ -566,6 +565,14 @@
    (add-to-list 'less-mode-hook 'my-less-mode-hook)
    ))
 
+
+(use-package
+ sass-mode
+ :mode (
+   ("\\.sass\\'" . sass-mode)
+   ("\\.scss\\'" . sass-mode)
+ )
+)
 
 ;; javascript mode (js2-mode)
 (require 'js2-mode)
