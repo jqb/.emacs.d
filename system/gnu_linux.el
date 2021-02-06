@@ -7,6 +7,7 @@
                   ":/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:"
                   (getenv "PATH")))
   (setq exec-path (cons "/usr/local/bin" exec-path))
+  (setq exec-path (cons (expand-file-name "~/tools/bin") exec-path))
   (setq shell-file-name "bash")
   (setq shell-command-switch "-c")
   )
