@@ -131,6 +131,11 @@
 ;;              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 
 
+;; Solution for "Bad request" issue when calling packages archive found here:
+;; https://www.reddit.com/r/emacs/comments/cdei4p/failed_to_download_gnu_archive_bad_request/
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
+
 ;; As found here:
 ;; https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
 ;; those few lines below should make sure I have all the packages I've
